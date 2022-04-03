@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,400;0,600;0,800;0,900;1,800;1,900&display=swap');
+body {
+  margin: 0;
+  font-family: Montserrat;
+  background-color: #ccc;
+}
+.wrapper {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  scroll-behavior: smooth;
+}
+.page {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+}
+
+.page1 {
+  background-color: #74b2d0;
+  align-content: center;
+  justify-content: center;
+}
+.page2 {
+  background-color: #52b79c;
+  align-content: center;
+  justify-content: center;
+}
+.page3 {
+  background-color: #db8089;
+  align-content: center;
+  justify-content: center;
+}
+.page4 {
+  background-color: #9880db;
+  align-content: center;
+  justify-content: center;
+}
+.page5 {
+  background-color: #aea17a;
+  align-content: center;
+  justify-content: center;
+}
+.dummy {
+  display: grid;
+  margin: auto;
+  cursor: pointer;
+}
+.slideNum {
+  display: block;
+  margin: auto;
+  font-size: 18em;
+  font-weight: 800;
+  line-height: 0.1em;
+  color: #ffffff5e;
+  position: relative;
+  top: -68px;
+}
+button {
+  margin: auto;
+  display: inline-block;
+  position: relative;
+  top: 90px;
+  padding: 25px 35px;
+  color: #fff;
+  background-color: #0000003b;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  font-weight: 800;
+  font-family: inherit;
+  transition: all 0.5s;
+}
+button:hover {
+  background-color: #fff;
+  color: #2b0b0b;
+}
+.current {
+  width: 100%;
+  height: 100%;
+  display: grid;
+}
+.slideNav {
+  position: fixed;
+  top: calc(50vh - 90px);
+  left: 30px;
+}
+.slideNav a {
+  display: flex;
+  border: 1px solid #fff;
+  border-radius: 10px;
+  width: 12px;
+  height: 12px;
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  font-size: 0.7em;
+}
+.slideNav a:hover {
+  background: #fff;
+}
+.slinkdesc {
+  display: none;
+  
+}
+.slinkdesc:hover {
+  display: block ruby;
+}
+.trigCount {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+}
