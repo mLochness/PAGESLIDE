@@ -107,11 +107,15 @@ button:hover {
   background: #fff;
 }
 .slinkdesc {
-  display: none;
-  
+  transition: all 0.3s ease; 
+  color: #fff;
+  white-space: nowrap;
+  position: relative;
+  left: 50px;
+  clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%);
 }
-.slinkdesc:hover {
-  display: block ruby;
+.slideNav a:hover > .slinkdesc {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
 .trigCount {
   position: fixed;
