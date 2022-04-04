@@ -110,12 +110,17 @@ button:hover {
   transition: all 0.3s ease; 
   color: #fff;
   white-space: nowrap;
+  text-align: left;
   position: relative;
-  left: 50px;
+  left: 35px;
   clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%);
 }
 .slideNav a:hover > .slinkdesc {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+.current-bull {
+  background: #fff;
+  transform: scale(1.3);
 }
 .trigCount {
   position: fixed;

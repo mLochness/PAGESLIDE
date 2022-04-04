@@ -82,13 +82,31 @@ $(document).ready(function () {
   });
   
   
-  //navigation nodes generator
-  $(".page").each(function() {
-      var pageid = $(this).attr("id");
+//navigation nodes generator
+$(document).ready(function () {
+  $(".page").each(function () {
+    var pageid = $(this).attr("id");
     var pagename = $(this).attr("name");
-      //elements.push(pageid , pagename);
-    var slink = $("<a><span class='slinkdesc'>" + pagename + "</span></a>").attr('href', "#" + pageid);
-       $(".slideNav").append(slink);
-  });
-  
+    var slink = $("<a class='nav-bull'><span class='slinkdesc'>" + pagename + "</span></a>").attr("href", "#" + pageid);
+    $(".slideNav").append(slink);
+    
+    //current page --> current bullet class
+    if ($(pageid).hasClass("current")) {
+      $(slink).addClass("current-bull");
+    } else {
+      $(slink).removeClass("current-bull");
+    }
+ 
+    //jQuery scrollTop instead of id anchor
+    /*   
+    $(".nav-bull").click(function () {
+    //var bullink =  $(this).attr("href")
+    $(".wrapper").animate({ scrollTop:$("#" + pageid).offset().top}, 500);
+    $(".current").removeClass("current");
+    $(pageid).addClass("current");
+   });
+    */
+    
+  });  
+});
   
