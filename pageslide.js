@@ -41,15 +41,16 @@ $(document).ready(function () {
 });
 
 // scroll to top button
-$(".backtop-btn").click(function () {
-  $(".wrapper").animate({ scrollTop: 0 }, 800);
-  $(".page").removeClass("current");
-  $(".page").first().addClass("current");
+$(document).ready(function () {
+  $(".backtop-btn").click(function () {
+    $(".wrapper").animate({ scrollTop: 0 }, 800);
+    $(".page").removeClass("current");
+    $(".page").first().addClass("current");
+  });
 });
 
 
 // fired wheel/touchmove or swipe events counter
-
 var triggers = 0;
 $(document).on("wheel", function (e) {
   $(".count").text(++triggers);
@@ -61,35 +62,35 @@ $(document).on("touchmove swipe", function () {
 
 //navigation nodes generator
 $(document).ready(function () {
-   $(".page").each(function () {
+  $(".page").each(function () {
     var pageid = $(this).attr("id");
     var pagename = $(this).attr("name");
     var slink = $("<a class='nav-bull'><span class='slinkdesc'>" + pagename + "</span></a>").attr("href", "#" + pageid);
-     $(".slideNav").append(slink);
-    
-  });  
+    $(".slideNav").append(slink);
+
+  });
 });
 
-
- //current page class --> current bullet class sync
+//assign current class to page with nav bullet click
 $(document).ready(function () {
   //var currentpageid = $(".current").attr("id");
-   
+
   $(".slideNav a").click(function () {
-      var bullhref = $(this).attr("href");
-      $(".current").removeClass("current");
-      $(bullhref).addClass("current");
-      
-      console.log(bullhref, "#"+ $(".current").attr("id"));
-    });
-  
+    var bullhref = $(this).attr("href");
+    $(".current").removeClass("current");
+    $(bullhref).addClass("current");
+
+    console.log(bullhref, "#" + $(".current").attr("id"));
+  });
+
+  //assign current class to nav bullet - sth wrong here 
   $(".slideNav a").each(function () {
-        var bullhref = $(this).attr("href");
-      //if(bullhref === ("#" + currentpageid)) { 
-    if(bullhref === "#" + $(".current").attr("id")) {
+    var bullhref = $(this).attr("href");
+    //if(bullhref === ("#" + currentpageid)) { 
+    if (bullhref === "#" + $(".current").attr("id")) {
       $(this).addClass("current-bull");
     } else {
       $(this).removeClass("current-bull");
     }
-   });
+  });
 });
