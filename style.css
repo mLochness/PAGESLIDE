@@ -87,11 +87,11 @@ button:hover {
 .slideNav {
   position: fixed;
   top: calc(50vh - 90px);
-  left: 30px;
+  left: 25px;
 }
 .slideNav a {
   display: flex;
-  border: 1px solid #fff;
+  background: #fff;
   border-radius: 10px;
   width: 12px;
   height: 12px;
@@ -102,9 +102,10 @@ button:hover {
   align-items: center;
   text-decoration: none;
   font-size: 0.7em;
+  opacity: 0.25;
 }
 .slideNav a:hover {
-  background: #fff;
+  opacity: 1;
 }
 .slinkdesc {
   transition: all 0.3s ease; 
@@ -119,11 +120,13 @@ button:hover {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
 .current-bull {
-  background: #fff;
-  transform: scale(1.3);
+  opacity: 1 !important;
+  transform: scale(1.28);
 }
 .trigCount {
   position: fixed;
   top: 10px;
   left: 10px;
+  color: #fff;
+  font-size: 0.85em;
 }
