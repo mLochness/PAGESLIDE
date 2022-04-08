@@ -1,3 +1,23 @@
+//click or touch(not working) page to next fullscreen
+$(document).ready(function () {
+  $(".page").click(function (event) {
+    event.preventDefault();
+    if ($(this).next().length) {
+      var nextPage = $(this).next(),
+        section = $(this).closest(".wrapper");
+      section.animate(
+        {
+          scrollTop: section.scrollTop() + nextPage.offset().top
+        },
+        700
+      );
+      $(".current").removeClass("current");
+      $(nextPage).addClass("current");
+      checkcurrent();
+    }
+  });
+});
+
 //upDown bool true = down ... false = up
 $(document).ready(function () {
   function move(current, upDown) {
@@ -11,7 +31,8 @@ $(document).ready(function () {
         );
         $(current).removeClass("current");
         $(nextPage).addClass("current");
-        console.log("pageDown");
+        console.log("pageDown", $(".current").attr("id"));
+        checkcurrent();
       }
     } else {
       if ($(current).prev().length) {
@@ -23,7 +44,8 @@ $(document).ready(function () {
         );
         $(current).removeClass("current");
         $(prevPage).addClass("current");
-        console.log("pageUp");
+        console.log("pageUp", $(".current").attr("id"));
+        checkcurrent();
       }
     }
   }
@@ -32,10 +54,12 @@ $(document).ready(function () {
   $(document).on("keydown wheel touchmove swipe", function (e) {
     if (e.keyCode === 34 || e.keyCode === 40 || e.originalEvent.deltaY > 1) {
       move($(".current"), true);
+      checkcurrent();
     }
 
     if (e.keyCode === 33 || e.keyCode === 38 || e.originalEvent.deltaY < -1) {
       move($(".current"), false);
+      checkcurrent();
     }
   });
 });
@@ -46,6 +70,7 @@ $(document).ready(function () {
     $(".wrapper").animate({ scrollTop: 0 }, 800);
     $(".page").removeClass("current");
     $(".page").first().addClass("current");
+    checkcurrent();
   });
 });
 
@@ -65,32 +90,37 @@ $(document).ready(function () {
   $(".page").each(function () {
     var pageid = $(this).attr("id");
     var pagename = $(this).attr("name");
-    var slink = $("<a class='nav-bull'><span class='slinkdesc'>" + pagename + "</span></a>").attr("href", "#" + pageid);
+    var slink = $(
+      "<a class='nav-bull'><span class='slinkdesc'>" + pagename + "</span></a>"
+    ).attr("href", "#" + pageid);
     $(".slideNav").append(slink);
-
   });
 });
 
-//assign current class to page with nav bullet click
-$(document).ready(function () {
-  //var currentpageid = $(".current").attr("id");
+//assign current class for nav bullets
+function checkcurrent() {
+  $(".slideNav a").each(function () {
+    var bullhref = $(this).attr("href");
+    if (bullhref == "#" + $(".current").attr("id")) {
+      $(".slideNav a").removeClass("current-bull");
+      $(this).addClass("current-bull");
+      console.log(
+        bullhref,
+        "=",
+        "#" + $(".current").attr("id"),
+        bullhref == "#" + $(".current").attr("id"),
+        "checkcurrent fired"
+      );
+    }
+  });
+}
 
+//bullet navigation - assign current page class
+$(document).ready(function () {
   $(".slideNav a").click(function () {
     var bullhref = $(this).attr("href");
     $(".current").removeClass("current");
     $(bullhref).addClass("current");
-
-    console.log(bullhref, "#" + $(".current").attr("id"));
-  });
-
-  //assign current class to nav bullet - sth wrong here 
-  $(".slideNav a").each(function () {
-    var bullhref = $(this).attr("href");
-    //if(bullhref === ("#" + currentpageid)) { 
-    if (bullhref === "#" + $(".current").attr("id")) {
-      $(this).addClass("current-bull");
-    } else {
-      $(this).removeClass("current-bull");
-    }
+    checkcurrent();
   });
 });
