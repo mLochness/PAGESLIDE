@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,400;0,600;0,800;0,900;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,400;0,600;0,800;0,900;1,800;1,900&display=swap");
 body {
   margin: 0;
   font-family: Montserrat;
@@ -53,12 +53,20 @@ body {
 .slideNum {
   display: block;
   margin: auto;
-  font-size: 18em;
-  font-weight: 800;
-  line-height: 0.1em;
-  color: #ffffff5e;
+  font-size: clamp(250px, 70vw, 500px);
+  font-weight: 900;
+  line-height: 0.2em;
+  color: #ffffff40;
   position: relative;
   top: -68px;
+}
+.pgName{
+  margin: auto;
+  font-size: clamp(40px, 5vw, 100px);
+  font-weight: 900;
+  position: relative;
+  top: 5vh;
+  opacity: 0.3;
 }
 button {
   margin: auto;
@@ -84,12 +92,13 @@ button:hover {
   height: 100%;
   display: grid;
 }
-.slideNav {
+.pageNav {
   position: fixed;
-  top: calc(50vh - 90px);
+  top: 50vh;
   left: 25px;
+  transform: translateY(-50%);
 }
-.slideNav a {
+.pageNav a {
   display: flex;
   background: #fff;
   border-radius: 10px;
@@ -104,11 +113,11 @@ button:hover {
   font-size: 0.7em;
   opacity: 0.25;
 }
-.slideNav a:hover {
+.pageNav a:hover {
   opacity: 1;
 }
 .slinkdesc {
-  transition: all 0.3s ease; 
+  transition: all 0.3s ease;
   color: #fff;
   white-space: nowrap;
   text-align: left;
@@ -116,17 +125,87 @@ button:hover {
   left: 35px;
   clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%);
 }
-.slideNav a:hover > .slinkdesc {
+.pageNav a:hover > .slinkdesc {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
 .current-bull {
   opacity: 1 !important;
   transform: scale(1.28);
 }
+.slideNav {
+  position: absolute;
+  top: calc(50vh - 25px);
+  width: 30px;
+  height: 50px;
+  background-color: #ffffff87;
+  clip-path: polygon(0 0, 0% 100%, 100% 50%);
+  transform: scale(0.85);
+  opacity: 0.35;
+  transition: all 0.3s ease;
+  cursor: pointer;
+ }
+.slideNavR {
+  right: 50px;
+  clip-path: polygon(0 0, 0% 100%, 100% 50%);
+ }
+.slideNavL {
+  left: 50px;
+  clip-path: polygon(0 50%, 100% 100%, 100% 0);
+ }
+.slideNav:hover {
+  opacity: 1;
+  transform: scale(1);
+}
+.slideDiv {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  position: absolute;
+  left: 0vw;
+}
+/* number of slides (not added dynamically yet) */
+.slideDiv2 {
+  width: 200vw;
+}
+.slideDiv3 {
+  width: 300vw;
+}
+.slideDiv4 {
+  width: 400vw;
+}
+.slideDiv5 {
+  width: 500vw;
+}
+.spslide {
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  top: 0;
+  display: flex;
+}
+.slide1 {
+  left: 0;
+}
+.slide2 {
+  background-color: #329f82;
+  left: 100vw;
+}
+.slide3 {
+  background-color: #329f82;
+  left: 200vw;
+}
+.slide4 {
+  left: 300vw;
+}
+.slide5 {
+  background-color: #329f82;
+  left: 400vw;
+}
+
 .trigCount {
   position: fixed;
-  top: 10px;
+  bottom: 10px;
   left: 10px;
-  color: #fff;
+  color: #ffffff87;
   font-size: 0.85em;
 }
