@@ -81,17 +81,7 @@ $(document).ready(function () {
     checkcurrent();
   });
 
-  // fired wheel/touchmove or swipe events counter
-  var triggers = 0;
-  $(document).on("wheel", function (e) {
-    $(".count").text(++triggers);
-  });
-
-  $(document).on("touchmove touchstart swipe", function () {
-    $(document).trigger("wheel");
-  });
-
-  //page navigation nodes generator
+   //page navigation nodes generator
   $(".page").each(function () {
     var pageid = $(this).attr("id");
     var pagename = $(this).attr("name");
@@ -226,3 +216,13 @@ $(document).ready(function () {
 
 
 });
+ 
+// fired wheel/touchmove or swipe events counter
+ var triggers = 0;
+ $(document).on("wheel", function (e) {
+   $(".count").text(++triggers);
+ });
+
+ $(document).on("touchmove touchstart swipe", function () {
+   $(document).trigger("wheel");
+ });
