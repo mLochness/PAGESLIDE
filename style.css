@@ -53,7 +53,7 @@ body {
 .slideNum {
   display: block;
   margin: auto;
-  font-size: clamp(250px, 70vw, 500px);
+  font-size: clamp(120px, 35vw, 500px);
   font-weight: 900;
   line-height: 0.2em;
   color: #ffffff40;
@@ -116,7 +116,7 @@ button:hover {
 .pageNav a:hover {
   opacity: 1;
 }
-.slinkdesc {
+.plinkdesc {
   transition: all 0.3s ease;
   color: #fff;
   white-space: nowrap;
@@ -125,7 +125,7 @@ button:hover {
   left: 35px;
   clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%);
 }
-.pageNav a:hover > .slinkdesc {
+.pageNav a:hover > .plinkdesc {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
 .current-bull {
@@ -162,19 +162,7 @@ button:hover {
   overflow: hidden;
   position: absolute;
   left: 0vw;
-}
-/* number of slides (not added dynamically yet) */
-.slideDiv2 {
-  width: 200vw;
-}
-.slideDiv3 {
-  width: 300vw;
-}
-.slideDiv4 {
-  width: 400vw;
-}
-.slideDiv5 {
-  width: 500vw;
+  width: 100vw;
 }
 .spslide {
   height: 100vh;
@@ -183,29 +171,71 @@ button:hover {
   top: 0;
   display: flex;
 }
+/* slides offset... for now*/
 .slide1 {
   left: 0;
 }
 .slide2 {
-  background-color: #329f82;
   left: 100vw;
 }
 .slide3 {
-  background-color: #329f82;
   left: 200vw;
 }
 .slide4 {
   left: 300vw;
 }
 .slide5 {
-  background-color: #329f82;
   left: 400vw;
 }
-
+.spslide:nth-of-type(even)  {
+  background-color: #ffffff0f;
+}
+.slideBul {
+  position: absolute;
+  left: 50vw;
+  bottom: 25px;
+  transform: translateX(-50%);
+}
+.slideBul a {
+  display: inline-flex;
+  background: #fff;
+  border-radius: 10px;
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  font-size: 0.7em;
+  opacity: 0.25;
+}
+.slideBul a:hover {
+  opacity: 1;
+}
+.slinkdesc {
+  transition: all 0.3s ease;
+  color: #fff;
+  white-space: nowrap;
+  text-align: left;
+  position: relative;
+  left: 0;
+  bottom: 18px;
+  clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+}
+.slideBul a:hover > .slinkdesc {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
 .trigCount {
   position: fixed;
   bottom: 10px;
   left: 10px;
   color: #ffffff87;
   font-size: 0.85em;
+}
+@media (max-width: 768px){
+.plinkdesc {
+    display: none;
+   }
 }
