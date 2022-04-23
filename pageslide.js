@@ -81,7 +81,7 @@ $(document).ready(function () {
     checkcurrent();
   });
 
-   //page navigation nodes generator
+  //page navigation nodes generator
   $(".page").each(function () {
     var pageid = $(this).attr("id");
     var pagename = $(this).attr("name");
@@ -124,6 +124,7 @@ $(document).ready(function () {
   function slideLeft() {
     var prevSlide = $(".current .curSlide").prev();
     if ($(prevSlide).length) {
+      //$(".current .slideDiv").animate({ left: "+=100vw" }, 300);
       $(".current .slideDiv").animate({ "left": "+=100vw" }, 300);
       $(".current .curSlide").removeClass("curSlide");
       $(prevSlide).addClass("curSlide");
@@ -136,6 +137,7 @@ $(document).ready(function () {
   function slideRight() {
     var nextSlide = $(".current .curSlide").next();
     if ($(nextSlide).length) {
+      //$(".current .slideDiv").animate({ left: "-=100vw" }, 300);
       $(".current .slideDiv").animate({ "left": "-=100vw" }, 300);
       $(".current .curSlide").removeClass("curSlide");
       $(nextSlide).addClass("curSlide");
@@ -147,10 +149,17 @@ $(document).ready(function () {
 
   //get slideDiv width from No. of slides
   $(".slideDiv").each(function () {
+    //var slideCount = $(".spslide").length;
     var slideCount = $(this).children().length;
     var autoWidth = $(this);
     autoWidth.css({ width: autoWidth.width() * slideCount });
     console.log($(this).parent().attr("id"), "slides:", slideCount);
+  });
+
+  //get offset +100vw for each slide from index
+  $(".spslide").each(function () {
+    var slideIndex = $(this).index();
+    $(this).css({ "left": (100 * slideIndex) + "vw" });
   });
 
   $(".slideDiv").each(function () {
@@ -182,7 +191,6 @@ $(document).ready(function () {
   $(".spslide").each(function () {
     var slideid = $(this).attr("id");
     var slidename = $(this).attr("name");
-    //add name attribute to bullet:
     var slink = $("<a class='slide-nav-bull'><span class='slinkdesc'>" + slidename + "</span></a>").attr("name", slideid);
     $(this).closest(".page").find(".slideBul").append(slink);
     $(this).closest(".page").find(".slideBul a").first().addClass("current-bull");
@@ -213,16 +221,14 @@ $(document).ready(function () {
     });
   });
 
-
-
 });
- 
-// fired wheel/touchmove or swipe events counter
- var triggers = 0;
- $(document).on("wheel", function (e) {
-   $(".count").text(++triggers);
- });
 
- $(document).on("touchmove touchstart swipe", function () {
-   $(document).trigger("wheel");
- });
+// fired wheel/touchmove or swipe events counter
+var triggers = 0;
+$(document).on("wheel", function (e) {
+  $(".count").text(++triggers);
+});
+
+$(document).on("touchmove swipe", function () {
+  $(document).trigger("wheel");
+});

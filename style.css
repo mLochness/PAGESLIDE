@@ -171,22 +171,6 @@ button:hover {
   top: 0;
   display: flex;
 }
-/* slides offset... for now*/
-.slide1 {
-  left: 0;
-}
-.slide2 {
-  left: 100vw;
-}
-.slide3 {
-  left: 200vw;
-}
-.slide4 {
-  left: 300vw;
-}
-.slide5 {
-  left: 400vw;
-}
 .spslide:nth-of-type(even)  {
   background-color: #ffffff0f;
 }
