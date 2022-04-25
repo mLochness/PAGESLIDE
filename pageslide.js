@@ -1,12 +1,9 @@
 $(document).ready(function () {
-
+ 
   //click or touch page to next fullscreen
   $(".slideNum")
-    .off("click tap touch touchstart")
-    .on("click tap touch touchstart", function (event) {
-      event.preventDefault();
-
-      if ($(".current").next().length) {
+  .on("click", function () {
+     if ($(".current").next().length) {
         var nextPage = $(".current").next(),
           section = $(this).closest(".wrapper");
         section.animate(
@@ -72,7 +69,20 @@ $(document).ready(function () {
       move($(".current"), false);
     }
   });
-
+ 
+  // scroll to next button
+  $(".next-btn").click(function (e) {
+    e.preventDefault(); 
+    if($(".current").next().length) {
+    var nextPage = $(".current").next(),
+        section = $(".current").closest(".wrapper");
+    section.animate({scrollTop: section.scrollTop() + nextPage.offset().top }, 300);
+      $(".current").removeClass("current");
+      $(nextPage).addClass("current");
+      checkcurrent();
+      console.log("next Button");
+   }
+  });
   // scroll to top button
   $(".backtop-btn").click(function () {
     $(".wrapper").animate({ scrollTop: 0 }, 800);
@@ -87,8 +97,8 @@ $(document).ready(function () {
     var pagename = $(this).attr("name");
     var plink = $(
       "<a class='page-nav-bull'><span class='plinkdesc'>" +
-      pagename +
-      "</span></a>"
+        pagename +
+        "</span></a>"
     ).attr("href", "#" + pageid);
     $(".pageNav").append(plink);
     $(".pageNav a").first().addClass("current-bull");
@@ -153,15 +163,15 @@ $(document).ready(function () {
     var slideCount = $(this).children().length;
     var autoWidth = $(this);
     autoWidth.css({ width: autoWidth.width() * slideCount });
-    console.log($(this).parent().attr("id"), "slides:", slideCount);
+    console.log($(this).parent().attr("id"),"slides:", slideCount);
   });
-
+   
   //get offset +100vw for each slide from index
   $(".spslide").each(function () {
     var slideIndex = $(this).index();
-    $(this).css({ "left": (100 * slideIndex) + "vw" });
+    $(this).css({"left" : (100*slideIndex) +"vw"});
   });
-
+  
   $(".slideDiv").each(function () {
     $(this).find(".spslide").first().addClass("curSlide");
   });
@@ -186,49 +196,49 @@ $(document).ready(function () {
       console.log("right arrow key");
     }
   });
-
-  //slide navigation nodes generator
-  $(".spslide").each(function () {
+  
+    //slide navigation nodes generator
+     $(".spslide").each(function() {
     var slideid = $(this).attr("id");
     var slidename = $(this).attr("name");
-    var slink = $("<a class='slide-nav-bull'><span class='slinkdesc'>" + slidename + "</span></a>").attr("name", slideid);
+     //add name attribute to bullet:
+    var slink = $("<a class='slide-nav-bull'><span class='slinkdesc'>" + slidename + "</span></a>" ).attr("name", slideid);
     $(this).closest(".page").find(".slideBul").append(slink);
     $(this).closest(".page").find(".slideBul a").first().addClass("current-bull");
-  });
-
-  //assign current class for slide nav bullets
-  function checkCurBul() {
+      });
+  
+    //assign current class for slide nav bullets
+    function checkCurBul() {
     $(".slideBul a").each(function () {
       var bullhref = $(this).attr("name");
       if (bullhref == $(".current .curSlide").attr("id")) {
         $(".current .slideBul a").removeClass("current-bull");
         $(this).addClass("current-bull");
-        console.log(bullhref, "=", $(".current .curSlide").attr("id"), "checkCurBul fired");
+        console.log( bullhref, "=", $(".current .curSlide").attr("id"), "checkCurBul fired");
       }
     });
   }
-
+  
   //slide bullet click function
-  $(".slideBul a").each(function () {
-    var sBulIndex = $(this).index();
-    var slideOffset = (sBulIndex * -100) + "vw";
-    $(this).click(function () {
-      $(".current .slideDiv").animate({ "left": slideOffset }, 300);
-      $(".current .curSlide").removeClass("curSlide");
-      $(".current .spslide:eq(" + sBulIndex + ")").addClass("curSlide");
-      console.log("sBulIndex =", sBulIndex, "slideOffset =", slideOffset);
-      checkCurBul();
-    });
+    $(".slideBul a").each(function(){
+      var sBulIndex = $(this).index();
+      var slideOffset = (sBulIndex*-100)+"vw";
+        $(this).click(function(){
+        $(".current .slideDiv").animate({ "left": slideOffset }, 300);
+        $(".current .curSlide").removeClass("curSlide");
+        $(".current .spslide:eq("+sBulIndex+")").addClass("curSlide");
+        console.log("sBulIndex =", sBulIndex, "slideOffset =", slideOffset);
+        checkCurBul();
+     });
+   });
+  
+});
+
+  // fired wheel/touchmove or swipe events counter
+  var triggers = 0;
+  $(document).on("wheel", function (e) {
+    $(".count").text(++triggers);
   });
-
-});
-
-// fired wheel/touchmove or swipe events counter
-var triggers = 0;
-$(document).on("wheel", function (e) {
-  $(".count").text(++triggers);
-});
-
-$(document).on("touchmove swipe", function () {
-  $(document).trigger("wheel");
-});
+  $(document).on("touchmove swipe", function () {
+    $(document).trigger("wheel");
+  });
