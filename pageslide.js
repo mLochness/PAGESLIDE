@@ -197,14 +197,14 @@ $(document).ready(function () {
     if (e.keyCode === 37 || e.originalEvent.deltaX > 1 && triggers > 5) {
       slideLeft();
       triggers = 0;
-      console.log("left arrow key");
+      console.log("slide to left");
     }
   });
   $(document).on("keydown wheel", function (e) {
     if (e.keyCode === 39 || e.originalEvent.deltaX < -1 && triggers > 5) {
       slideRight();
       triggers = 0;
-      console.log("right arrow key");
+      console.log("slide to right");
     }
   });
 
@@ -220,17 +220,16 @@ $(document).ready(function () {
   });
 
   //assign current class for slide nav bullets
-  function checkCurBul() {
-    $(".slideBul a").each(function () {
-      var bullhref = $(this).attr("name");
-      if (bullhref == $(".current .curSlide").attr("id")) {
-        $(".current .slideBul a").removeClass("current-bull");
-        $(this).addClass("current-bull");
-        console.log(bullhref, "=", $(".current .curSlide").attr("id"), "checkCurBul fired");
-      }
-    });
-  }
-
+    function checkCurBul() {
+      $(".slideBul a").each(function () {
+        var sBulIndex = $(this).index();
+        if (sBulIndex == $(".current .curSlide").index()) {
+          $(".current .slide-nav-bull").removeClass("current-bull");
+          $(".current .slide-nav-bull:eq(" + sBulIndex + ")").addClass("current-bull");
+          console.log(sBulIndex, "=", $(".current .curSlide").index(), "checkCurBul fired");
+        }
+      });
+    }
 
   //slide bullet click function
   $(".slideBul a").each(function () {
@@ -257,10 +256,8 @@ $(document).ready(function () {
   var firstExecution = 0; // Store the first execution time
   var interval = 800;
 
-
-  // this is ugly repeating for now..
+  
   function scrollimitDown() {
-    // current date
     var date = new Date();
     var checkTime = date.getTime();
     if ((checkTime - firstExecution) > interval) {
@@ -271,9 +268,8 @@ $(document).ready(function () {
       console.log('dont scroll yet');
     }
   }
-  function scrollimitUp() {
-    // current date
-    var date = new Date();
+  function scrollimitUp() { // this is ugly repeating for now..
+    var date = new Date(); 
     var checkTime = date.getTime();
     if ((checkTime - firstExecution) > interval) {
       firstExecution = checkTime;
@@ -287,13 +283,13 @@ $(document).ready(function () {
 
   $(document).on("wheel", function (e) {
     if (
-      e.originalEvent.deltaY > 1 && triggers > 1 && triggers < 65
+      e.originalEvent.deltaY > 1 && triggers > 0 && triggers < 100
     ) {
       scrollimitDown()
       triggers = 0;
     }
     if (
-      e.originalEvent.deltaY < -1 && triggers > 1 && triggers < 65
+      e.originalEvent.deltaY < -1 && triggers > 0 && triggers < 100
     ) {
       scrollimitUp()
       triggers = 0;
@@ -303,7 +299,7 @@ $(document).ready(function () {
 
 /*
   //touch/mouse drag-moving ..in progress 
-  const slidewrap = document.querySelector('.wrapper'),
+    const slidewrap = document.querySelector('.wrapper'),
     pages = Array.from(document.querySelectorAll('.page'))
 
   let isDragging = false,
@@ -323,7 +319,7 @@ $(document).ready(function () {
     //mouse events
     page.addEventListener('mousedown', touchStart(index))
     page.addEventListener('mouseup', touchEnd)
-    page.addEventListener('mouseleave', touchEnd)
+    //page.addEventListener('mouseleave', touchEnd)
     page.addEventListener('mousemove', touchMove)
   })
 
@@ -345,10 +341,10 @@ $(document).ready(function () {
 
     const movedBy = currentTranslate - prevTranslate
 
-    if (movedBy < -100 && currentIndex < pages.length - 1)
+    if (movedBy < -50 && currentIndex < pages.length - 1)
       currentIndex += 1
 
-    if (movedBy > 100 && currentIndex > 0)
+    if (movedBy > 50 && currentIndex > 0)
       currentIndex -= 1
 
     setPositionByIndex()
@@ -374,7 +370,7 @@ $(document).ready(function () {
   }
 
   function setSliderPosition() {
-    slidewrap.style.transform = `translateY(${currentTranslate}px)`;
+    slidewrap.style.top = `${currentTranslate}px`;
     checkcurrent();
     console.log(currentTranslate)
   }
@@ -424,3 +420,91 @@ $(document).ready(function () {
   */
 });
 
+
+//////////////////original////////////////////////////
+/*
+  
+const slidewrap = document.querySelector('.wrapper'),
+pages = Array.from(document.querySelectorAll('.page'))
+
+let isDragging = false,
+startPos = 0,
+currentTranslate = 0,
+prevTranslate = 0,
+animationID = 0,
+currentIndex = 0
+
+pages.forEach((page, index) => {
+
+//touch events
+page.addEventListener('touchstart', touchStart(index))
+page.addEventListener('touchend', touchEnd)
+page.addEventListener('touchmove', touchMove)
+
+//mouse events
+page.addEventListener('mousedown', touchStart(index))
+page.addEventListener('mouseup', touchEnd)
+page.addEventListener('mouseleave', touchEnd)
+page.addEventListener('mousemove', touchMove)
+})
+
+function touchStart(index) {
+return function(event) {
+currentIndex = index
+startPos = getPositionY(event)
+isDragging = true
+
+animationID = requestAnimationFrame(animation)
+slidewrap.classList.add('grabbing')
+console.log('start')
+}
+}
+
+function touchEnd() {
+isDragging = false
+cancelAnimationFrame(animationID)
+
+const movedBy = currentTranslate - prevTranslate
+
+if(movedBy < -100 && currentIndex < pages.length - 1)
+currentIndex += 1
+
+if(movedBy > 100 && currentIndex > 0)
+currentIndex -= 1
+
+setPositionByIndex()
+
+slidewrap.classList.remove('grabbing')
+console.log('end')
+}
+
+function touchMove() {
+const currentPosition = getPositionY(event)
+currentTranslate = prevTranslate + currentPosition - startPos
+}
+
+function getPositionY(event) {
+return event.type.includes('mouse')
+? event.pageY
+: event.touches[0].clientY
+}
+
+function animation() {
+setSliderPosition()
+if(isDragging) requestAnimationFrame(animation)
+}
+
+function setSliderPosition() {
+slidewrap.style.transform = `translateY(${currentTranslate}px)`;
+checkcurrent();
+
+}
+
+function setPositionByIndex() {
+currentTranslate = currentIndex * -window.innerHeight
+prevTranslate = currentTranslate
+setSliderPosition()
+}
+
+*/
+//////////////////////////////////////////////////////////
