@@ -19,15 +19,6 @@ $(document).ready(function () {
     });
   });
 
-  //click or touch element to next fullscreen
-  $(".slideNum")
-    .on("click", function () {
-      if ($(".current").next().length) {
-        move($(".current"), true);
-        checkcurrent();
-      }
-    });
-
   //upDown bool true = down ... false = up
   function move(current, upDown) {
     if (upDown) {
@@ -74,13 +65,12 @@ $(document).ready(function () {
     e.preventDefault();
     if ($(".current").next().length) {
       move($(".current"), true);
-      checkcurrent();
       console.log("next Button");
     }
   });
   // scroll to top button
   $(".backtop-btn").click(function () {
-    $(".wrapper").animate({ "top": "0" }, 700);
+    $(".wrapper").animate({ "top": "0" }, 1000);
     $(".page").removeClass("current");
     $(".page").first().addClass("current");
     checkcurrent();
@@ -105,7 +95,7 @@ $(document).ready(function () {
     var bulIndex = $(this).index();
     var pageOffset = (bulIndex * -100) + "vh";
     $(this).click(function () {
-      $(".wrapper").animate({ "top": pageOffset }, "slow");
+      $(".wrapper").animate({ "top": pageOffset }, 700);
       $(".current").removeClass("current");
       $(".page:eq(" + bulIndex + ")").addClass("current");
       console.log("bulIndex =", bulIndex, "slideOffset =", pageOffset);
@@ -113,26 +103,39 @@ $(document).ready(function () {
     });
   });
 
+  /*
+    //assign current class for page nav bullets + href/id attr.
+    function checkcurrent() {
+      $(".pageNav a").each(function () {
+        var bullhref = $(this).attr("href");
+        if (bullhref == "#" + $(".current").attr("id")) {
+          $(".pageNav a").removeClass("current-bull");
+          $(this).addClass("current-bull");
+          console.log(
+            bullhref,
+            "=",
+            "#" + $(".current").attr("id"),
+            bullhref == "#" + $(".current").attr("id"),
+            "checkcurrent fired"
+          );
+        }
+      });
+    }
+  */
 
   //assign current class for page nav bullets
   function checkcurrent() {
     $(".pageNav a").each(function () {
-      var bullhref = $(this).attr("href");
-      if (bullhref == "#" + $(".current").attr("id")) {
+      var pBulIndex = $(this).index();
+      if (pBulIndex == $(".current").index()) {
         $(".pageNav a").removeClass("current-bull");
-        $(this).addClass("current-bull");
-        console.log(
-          bullhref,
-          "=",
-          "#" + $(".current").attr("id"),
-          bullhref == "#" + $(".current").attr("id"),
-          "checkcurrent fired"
-        );
+        $(".pageNav a:eq(" + pBulIndex + ")").addClass("current-bull");
+        console.log(pBulIndex, "=", $(".current").index(), "checkcurrent fired");
       }
     });
   }
 
-  //bullet navigation - assign current page class
+  //page bullet click navigation
   $(".pageNav a").click(function () {
     var bullhref = $(this).attr("href");
     $(".current").removeClass("current");
@@ -141,7 +144,7 @@ $(document).ready(function () {
     console.log(bullhref);
   });
 
-  // slide to side
+  // slide to left
   function slideLeft() {
     var prevSlide = $(".current .curSlide").prev();
     if ($(prevSlide).length) {
@@ -150,10 +153,10 @@ $(document).ready(function () {
       $(prevSlide).addClass("curSlide");
       checkCurBul();
     } else {
-      $(".current .curSlide").effect("shake", { times: 1 }, 200);
+      shakeLast();
     }
   }
-
+  // slide to right
   function slideRight() {
     var nextSlide = $(".current .curSlide").next();
     if ($(nextSlide).length) {
@@ -162,11 +165,15 @@ $(document).ready(function () {
       $(nextSlide).addClass("curSlide");
       checkCurBul();
     } else {
-      $(".current .curSlide").effect("shake", { times: 1 }, 200);
+      shakeLast();
     }
   }
+  // shake if no more slides exist
+  function shakeLast() {
+    $(".current .curSlide").effect("shake", { times: 1 }, 200);
+  }
 
-  //get slideDiv width from No. of slides
+  //get slideDiv width from No. of slides 
   $(".slideDiv").each(function () {
     var slideCount = $(this).children().length;
     var autoWidth = $(this);
@@ -194,14 +201,16 @@ $(document).ready(function () {
 
   //left/right arrow keys & wheel for mouse with X-axis slide scroll
   $(document).on("keydown wheel", function (e) {
-    if (e.keyCode === 37 || e.originalEvent.deltaX > 1 && triggers > 5) {
+    //if (e.keyCode === 37 || e.originalEvent.deltaX > 1 && triggers > 5) {
+    if (e.keyCode === 37 || e.originalEvent.deltaX > 1 ) {
       slideLeft();
       triggers = 0;
       console.log("slide to left");
     }
   });
   $(document).on("keydown wheel", function (e) {
-    if (e.keyCode === 39 || e.originalEvent.deltaX < -1 && triggers > 5) {
+    //if (e.keyCode === 39 || e.originalEvent.deltaX < -1 && triggers > 5) {
+    if (e.keyCode === 39 || e.originalEvent.deltaX < -1 ) {
       slideRight();
       triggers = 0;
       console.log("slide to right");
@@ -220,16 +229,16 @@ $(document).ready(function () {
   });
 
   //assign current class for slide nav bullets
-    function checkCurBul() {
-      $(".slideBul a").each(function () {
-        var sBulIndex = $(this).index();
-        if (sBulIndex == $(".current .curSlide").index()) {
-          $(".current .slide-nav-bull").removeClass("current-bull");
-          $(".current .slide-nav-bull:eq(" + sBulIndex + ")").addClass("current-bull");
-          console.log(sBulIndex, "=", $(".current .curSlide").index(), "checkCurBul fired");
-        }
-      });
-    }
+  function checkCurBul() {
+    $(".slideBul a").each(function () {
+      var sBulIndex = $(this).index();
+      if (sBulIndex == $(".current .curSlide").index()) {
+        $(".current .slide-nav-bull").removeClass("current-bull");
+        $(".current .slide-nav-bull:eq(" + sBulIndex + ")").addClass("current-bull");
+        console.log(sBulIndex, "=", $(".current .curSlide").index(), "checkCurBul fired");
+      }
+    });
+  }
 
   //slide bullet click function
   $(".slideBul a").each(function () {
@@ -252,11 +261,9 @@ $(document).ready(function () {
   });
 
   // limit multiple wheel triggers to one move - mouse inertia timeout
-
   var firstExecution = 0; // Store the first execution time
-  var interval = 800;
+  var interval = 800; // timeout another wheel event
 
-  
   function scrollimitDown() {
     var date = new Date();
     var checkTime = date.getTime();
@@ -269,13 +276,12 @@ $(document).ready(function () {
     }
   }
   function scrollimitUp() { // this is ugly repeating for now..
-    var date = new Date(); 
+    var date = new Date();
     var checkTime = date.getTime();
     if ((checkTime - firstExecution) > interval) {
       firstExecution = checkTime;
       move($(".current"), false);
       console.log('scrollimit start');
-
     } else {
       console.log('dont scroll yet');
     }
@@ -297,66 +303,74 @@ $(document).ready(function () {
   });
 
 
-/*
-  //touch/mouse drag-moving ..in progress 
-    const slidewrap = document.querySelector('.wrapper'),
-    pages = Array.from(document.querySelectorAll('.page'))
+  //slide bullets on mobile overlapped by tab/address bar - position modification
+  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    $('.slideBul').css({ "bottom": 80 + "px" });
+  };
 
+
+  //swipe navigation with drag
+  var startingX, startingY, movingX, movingY;
+  var touchmoved;
   let isDragging = false,
-    startPos = 0,
-    currentTranslate = 0,
-    prevTranslate = 0,
-    animationID = 0,
-    currentIndex = 0
+  draggingY = 0,
+  draggingX = 0,
+  animationID = 0
 
-  pages.forEach((page, index) => {
+  $(document).on("touchstart", function touchStart(evt) {
+    startingX = evt.touches[0].clientX;
+    startingY = evt.touches[0].clientY;
+    isDragging = true;
+  });
 
-    //touch events
-    page.addEventListener('touchstart', touchStart(index))
-    page.addEventListener('touchend', touchEnd)
-    page.addEventListener('touchmove', touchMove)
+  $(document).on("touchmove", function touchMove(evt) {
+    movingX = evt.touches[0].clientX;
+    movingY = evt.touches[0].clientY;
+    dragYPosition();
+    dragXPosition();
+  });
 
-    //mouse events
-    page.addEventListener('mousedown', touchStart(index))
-    page.addEventListener('mouseup', touchEnd)
-    //page.addEventListener('mouseleave', touchEnd)
-    page.addEventListener('mousemove', touchMove)
-  })
-
-  function touchStart(index) {
-    return function (event) {
-      currentIndex = index
-      startPos = getPositionY(event)
-      isDragging = true
-
-      animationID = requestAnimationFrame(animation)
-      slidewrap.classList.add('grabbing')
-      console.log('start')
+  $(document).on("touchend", function touchEnd(evt) {
+    if (startingX + 50 < movingX && draggingX > 50) {
+      slideLeft();
+      console.log('right');
+    } else if (startingX - 50 > movingX && draggingX < -50) {
+      slideRight();
+      console.log('left');
     }
-  }
+    if (startingY + 50 < movingY && draggingY > 50) {
+      move($(".current"), false);
+      console.log('down');
+    } else if (startingY - 50 > movingY && draggingY < -50) {
+      move($(".current"), true);
+      console.log('up');
+    } 
+    isDragging = false;
+    console.log("draggingY:", draggingY);
+    console.log("draggingX:", draggingX);
+    draggingY = 0;
+    draggingX = 0;
+    $(".wrapper").css("transform","translateY("+draggingY+"px)");
+    $(".current .slideDiv").css("transform","translateX("+draggingX+"px)");
+  });
 
-  function touchEnd() {
-    isDragging = false
-    cancelAnimationFrame(animationID)
+  function dragYPosition() {
+    draggingY = movingY - startingY;
+    $(".wrapper").css("transform","translateY("+draggingY+"px)");
+    //console.log(draggingY);
+    }
+  
+  function dragXPosition() {
+      draggingX = movingX - startingX;
+      $(".current .slideDiv").css("transform","translateX("+draggingX+"px)");
+      //console.log(draggingY);
+    }
 
-    const movedBy = currentTranslate - prevTranslate
 
-    if (movedBy < -50 && currentIndex < pages.length - 1)
-      currentIndex += 1
-
-    if (movedBy > 50 && currentIndex > 0)
-      currentIndex -= 1
-
-    setPositionByIndex()
-
-    slidewrap.classList.remove('grabbing')
-    console.log('end')
-  }
-
-  function touchMove() {
-    const currentPosition = getPositionY(event)
-    currentTranslate = prevTranslate + currentPosition - startPos
-  }
+/*
+  //mouse drag
+  movingX = getPositionX;
+  movingY = getPositionY;
 
   function getPositionY(event) {
     return event.type.includes('mouse')
@@ -364,147 +378,13 @@ $(document).ready(function () {
       : event.touches[0].clientY
   }
 
-  function animation() {
-    setSliderPosition()
-    if (isDragging) requestAnimationFrame(animation)
-  }
-
-  function setSliderPosition() {
-    slidewrap.style.top = `${currentTranslate}px`;
-    checkcurrent();
-    console.log(currentTranslate)
-  }
-
-  function setPositionByIndex() {
-    currentTranslate = currentIndex * -window.innerHeight
-    prevTranslate = currentTranslate
-    setSliderPosition()
+  function getPositionX(event) {
+    return event.type.includes('mouse')
+      ? event.pageX
+      : event.touches[0].clientX
   }
 */
+ 
 
-  /*
-   //mobile touchmove Y - user unfriendly
-    var lastY;
-  $(document).on('touchmove', function (e){
-    //e.preventDefault();
-    if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-       var currentY = e.originalEvent.touches[0].clientY;
-       if(currentY > lastY+60){
-           move($(".current"), true);
-         console.log("touchDown");
-       }else if(currentY < lastY-60){
-           move($(".current"), false);
-         console.log("touchUp");
-       }
-       lastY = currentY;
-      }
-  });
-  */
-  /*
-  //mobile touchmove X - same here
-    var lastX;
-  $(document).on('touchmove', function (e){
-    e.preventDefault();
-    if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-       var currentX = e.originalEvent.touches[0].clientX;
-       if(currentX > lastX+60){
-           slideRight();
-         console.log("swipeRight");
-       }else if(currentX < lastX-60){
-           slideLeft();
-         console.log("swipeLeft");
-       }
-       lastX = currentX;
-      }
-  });
-  */
+
 });
-
-
-//////////////////original////////////////////////////
-/*
-  
-const slidewrap = document.querySelector('.wrapper'),
-pages = Array.from(document.querySelectorAll('.page'))
-
-let isDragging = false,
-startPos = 0,
-currentTranslate = 0,
-prevTranslate = 0,
-animationID = 0,
-currentIndex = 0
-
-pages.forEach((page, index) => {
-
-//touch events
-page.addEventListener('touchstart', touchStart(index))
-page.addEventListener('touchend', touchEnd)
-page.addEventListener('touchmove', touchMove)
-
-//mouse events
-page.addEventListener('mousedown', touchStart(index))
-page.addEventListener('mouseup', touchEnd)
-page.addEventListener('mouseleave', touchEnd)
-page.addEventListener('mousemove', touchMove)
-})
-
-function touchStart(index) {
-return function(event) {
-currentIndex = index
-startPos = getPositionY(event)
-isDragging = true
-
-animationID = requestAnimationFrame(animation)
-slidewrap.classList.add('grabbing')
-console.log('start')
-}
-}
-
-function touchEnd() {
-isDragging = false
-cancelAnimationFrame(animationID)
-
-const movedBy = currentTranslate - prevTranslate
-
-if(movedBy < -100 && currentIndex < pages.length - 1)
-currentIndex += 1
-
-if(movedBy > 100 && currentIndex > 0)
-currentIndex -= 1
-
-setPositionByIndex()
-
-slidewrap.classList.remove('grabbing')
-console.log('end')
-}
-
-function touchMove() {
-const currentPosition = getPositionY(event)
-currentTranslate = prevTranslate + currentPosition - startPos
-}
-
-function getPositionY(event) {
-return event.type.includes('mouse')
-? event.pageY
-: event.touches[0].clientY
-}
-
-function animation() {
-setSliderPosition()
-if(isDragging) requestAnimationFrame(animation)
-}
-
-function setSliderPosition() {
-slidewrap.style.transform = `translateY(${currentTranslate}px)`;
-checkcurrent();
-
-}
-
-function setPositionByIndex() {
-currentTranslate = currentIndex * -window.innerHeight
-prevTranslate = currentTranslate
-setSliderPosition()
-}
-
-*/
-//////////////////////////////////////////////////////////
