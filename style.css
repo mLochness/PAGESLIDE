@@ -10,8 +10,8 @@ body {
   width: 100vw;
   height: 100vh;
   top: 0;
-  /*transform: translateY(0);*/
-  transition: transform 0.5s ease-out; 
+  transform: translateY(0);
+  transition: transform 0.5s ease-out;
   /*overflow: hidden; (switched from jQuery scrollTop to CSS top)*/
   /*scroll-behavior: smooth; (!causes scrollTop not working in iOS!)*/
 }
@@ -94,7 +94,6 @@ button:hover {
 .current {
   width: 100%;
   height: 100%;
-  display: grid;
 }
 .pageNav {
   position: fixed;
@@ -167,9 +166,10 @@ button:hover {
   position: absolute;
   left: 0vw;
   width: 100vw;
+  transition: transform 0.5s ease-out;
 }
 .spslide {
-  height: 100vh;
+  height: 100%; /* 100vh - tab bar on mobile hides bottom bullets */
   width: 100vw;
   position: absolute;
   top: 0;
@@ -222,6 +222,10 @@ button:hover {
   color: #ffffff87;
   font-size: 0.85em;
 }
+.grabbing {
+  cursor: grab;
+}
+
 @media (max-width: 768px){
 .plinkdesc, .slinkdesc {
     display: none;
