@@ -1,5 +1,7 @@
 $(document).ready(function () {
 
+  $(".page").first().addClass("current");
+
   //get offset +100vh for each page from index
   $(".page").each(function () {
     var pageIndex = $(this).index();
@@ -44,21 +46,32 @@ $(document).ready(function () {
     }
   }
 
-  $(".page").first().addClass("current");
   $(document).on("keydown", function (e) {
+    //PgDown || DownArrow key
     if (
       e.keyCode === 34 || e.keyCode === 40
     ) {
       move($(".current"), true);
     }
-
+    //PgUp || UpArrow key
     if (
       e.keyCode === 33 || e.keyCode === 38
     ) {
       move($(".current"), false);
     }
+    //Home key
+    if (
+      e.keyCode === 36
+    ) {
+      goToTop();
+    }
+    //End key
+    if (
+      e.keyCode === 35
+    ) {
+      goToEnd();
+    }
   });
-
 
   // next button
   $(".next-btn").click(function (e) {
@@ -68,13 +81,27 @@ $(document).ready(function () {
       console.log("next Button");
     }
   });
+
   // scroll to top button
   $(".backtop-btn").click(function () {
+    goToTop();
+  });
+
+  function goToTop() {
     $(".wrapper").animate({ "top": "0" }, 1000);
     $(".page").removeClass("current");
     $(".page").first().addClass("current");
     checkcurrent();
-  });
+  };
+
+  function goToEnd() {
+    var pageCount = $(".page").length;
+    $(".wrapper").animate({ "top": (-100 * (pageCount - 1)) + "vh" }, 1000);
+    $(".page").removeClass("current");
+    $(".page").last().addClass("current");
+    checkcurrent();
+    console.log("pageCount:", pageCount);
+  };
 
   //page navigation nodes generator
   $(".page").each(function () {
@@ -103,26 +130,6 @@ $(document).ready(function () {
     });
   });
 
-  /*
-    //assign current class for page nav bullets + href/id attr.
-    function checkcurrent() {
-      $(".pageNav a").each(function () {
-        var bullhref = $(this).attr("href");
-        if (bullhref == "#" + $(".current").attr("id")) {
-          $(".pageNav a").removeClass("current-bull");
-          $(this).addClass("current-bull");
-          console.log(
-            bullhref,
-            "=",
-            "#" + $(".current").attr("id"),
-            bullhref == "#" + $(".current").attr("id"),
-            "checkcurrent fired"
-          );
-        }
-      });
-    }
-  */
-
   //assign current class for page nav bullets
   function checkcurrent() {
     $(".pageNav a").each(function () {
@@ -134,15 +141,6 @@ $(document).ready(function () {
       }
     });
   }
-
-  //page bullet click navigation
-  $(".pageNav a").click(function () {
-    var bullhref = $(this).attr("href");
-    $(".current").removeClass("current");
-    $(bullhref).addClass("current");
-    checkcurrent();
-    console.log(bullhref);
-  });
 
   // slide to left
   function slideLeft() {
@@ -202,7 +200,7 @@ $(document).ready(function () {
   //left/right arrow keys & wheel for mouse with X-axis slide scroll
   $(document).on("keydown wheel", function (e) {
     //if (e.keyCode === 37 || e.originalEvent.deltaX > 1 && triggers > 5) {
-    if (e.keyCode === 37 || e.originalEvent.deltaX > 1 ) {
+    if (e.keyCode === 37 || e.originalEvent.deltaX > 1) {
       slideLeft();
       triggers = 0;
       console.log("slide to left");
@@ -210,7 +208,7 @@ $(document).ready(function () {
   });
   $(document).on("keydown wheel", function (e) {
     //if (e.keyCode === 39 || e.originalEvent.deltaX < -1 && triggers > 5) {
-    if (e.keyCode === 39 || e.originalEvent.deltaX < -1 ) {
+    if (e.keyCode === 39 || e.originalEvent.deltaX < -1) {
       slideRight();
       triggers = 0;
       console.log("slide to right");
@@ -313,9 +311,9 @@ $(document).ready(function () {
   var startingX, startingY, movingX, movingY;
   var touchmoved;
   let isDragging = false,
-  draggingY = 0,
-  draggingX = 0,
-  animationID = 0
+    draggingY = 0,
+    draggingX = 0,
+    animationID = 0
 
   $(document).on("touchstart", function touchStart(evt) {
     startingX = evt.touches[0].clientX;
@@ -344,47 +342,47 @@ $(document).ready(function () {
     } else if (startingY - 50 > movingY && draggingY < -50) {
       move($(".current"), true);
       console.log('up');
-    } 
+    }
     isDragging = false;
     console.log("draggingY:", draggingY);
     console.log("draggingX:", draggingX);
     draggingY = 0;
     draggingX = 0;
-    $(".wrapper").css("transform","translateY("+draggingY+"px)");
-    $(".current .slideDiv").css("transform","translateX("+draggingX+"px)");
+    $(".wrapper").css("transform", "translateY(" + draggingY + "px)");
+    $(".current .slideDiv").css("transform", "translateX(" + draggingX + "px)");
   });
 
   function dragYPosition() {
     draggingY = movingY - startingY;
-    $(".wrapper").css("transform","translateY("+draggingY+"px)");
+    $(".wrapper").css("transform", "translateY(" + draggingY + "px)");
     //console.log(draggingY);
+  }
+
+  function dragXPosition() {
+    draggingX = movingX - startingX;
+    $(".current .slideDiv").css("transform", "translateX(" + draggingX + "px)");
+    //console.log(draggingY);
+  }
+
+
+  /*
+    //mouse drag
+    movingX = getPositionX;
+    movingY = getPositionY;
+  
+    function getPositionY(event) {
+      return event.type.includes('mouse')
+        ? event.pageY
+        : event.touches[0].clientY
     }
   
-  function dragXPosition() {
-      draggingX = movingX - startingX;
-      $(".current .slideDiv").css("transform","translateX("+draggingX+"px)");
-      //console.log(draggingY);
+    function getPositionX(event) {
+      return event.type.includes('mouse')
+        ? event.pageX
+        : event.touches[0].clientX
     }
+  */
 
-
-/*
-  //mouse drag
-  movingX = getPositionX;
-  movingY = getPositionY;
-
-  function getPositionY(event) {
-    return event.type.includes('mouse')
-      ? event.pageY
-      : event.touches[0].clientY
-  }
-
-  function getPositionX(event) {
-    return event.type.includes('mouse')
-      ? event.pageX
-      : event.touches[0].clientX
-  }
-*/
- 
 
 
 });
