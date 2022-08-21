@@ -309,11 +309,10 @@ $(document).ready(function () {
 
   //swipe navigation with drag
   var startingX, startingY, movingX, movingY;
-  var touchmoved;
+  
   let isDragging = false,
     draggingY = 0,
-    draggingX = 0,
-    animationID = 0
+    draggingX = 0
 
   $(document).on("touchstart", function touchStart(evt) {
     startingX = evt.touches[0].clientX;
@@ -321,14 +320,24 @@ $(document).ready(function () {
     isDragging = true;
   });
 
-  $(document).on("touchmove", function touchMove(evt) {
-    movingX = evt.touches[0].clientX;
-    movingY = evt.touches[0].clientY;
-    dragYPosition();
+$(document).on("touchmove", function touchMove(evt) {
+  movingX = evt.touches[0].clientX;
+  movingY = evt.touches[0].clientY;
+  //dragging enabled in one axis only:
+  var dragY =  Math.abs(movingY - startingY);
+  var dragX =  Math.abs(movingX - startingX);
+  if (dragY > dragX) {
+    movingX = 0;
+  dragYPosition();
+  } else {
+    movingY = 0;
     dragXPosition();
-  });
+  }
+  console.log("Y:", (movingY - startingY) , "X:", (movingX - startingX));
+  console.log("dragY:", dragY , "dragX:", dragX);
+});
 
-  $(document).on("touchend", function touchEnd(evt) {
+  $(document).on("touchend", function touchEnd() {
     if (startingX + 50 < movingX && draggingX > 50) {
       slideLeft();
       console.log('right');
@@ -344,8 +353,8 @@ $(document).ready(function () {
       console.log('up');
     }
     isDragging = false;
-    console.log("draggingY:", draggingY);
-    console.log("draggingX:", draggingX);
+    //console.log("draggingY:", draggingY);
+    //console.log("draggingX:", draggingX);
     draggingY = 0;
     draggingX = 0;
     $(".wrapper").css("transform", "translateY(" + draggingY + "px)");
@@ -361,11 +370,11 @@ $(document).ready(function () {
   function dragXPosition() {
     draggingX = movingX - startingX;
     $(".current .slideDiv").css("transform", "translateX(" + draggingX + "px)");
-    //console.log(draggingY);
+    //console.log(draggingX);
   }
 
 
-  /*
+ /*
     //mouse drag
     movingX = getPositionX;
     movingY = getPositionY;
@@ -381,8 +390,7 @@ $(document).ready(function () {
         ? event.pageX
         : event.touches[0].clientX
     }
-  */
-
+ */
 
 
 });
