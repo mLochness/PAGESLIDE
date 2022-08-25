@@ -5,7 +5,7 @@ body {
   background-color: #ccc;
   overflow: hidden;
 }
-.wrapper {
+.pswrapper {
   position: fixed;
   width: 100vw;
   height: 100vh;
@@ -222,9 +222,11 @@ button:hover {
   color: #ffffff87;
   font-size: 0.85em;
 }
+
 .grabbing {
   cursor: grab;
 }
+
 
 @media (max-width: 768px){
 .plinkdesc, .slinkdesc {

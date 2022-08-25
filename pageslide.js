@@ -13,39 +13,38 @@ $(document).ready(function () {
     var bulIndex = $(this).index();
     var pageOffset = (bulIndex * -100) + "vh";
     $(this).click(function () {
-      $(".wrapper").animate({ "top": pageOffset }, 300);
+      $(".pswrapper").animate({ "top": pageOffset }, 300);
       $(".current").removeClass("current");
       $(".page:eq(" + bulIndex + ")").addClass("current");
-      console.log("bulIndex =", bulIndex, "slideOffset =", pageOffset);
       checkcurrent();
     });
   });
 
-  //upDown bool true = down ... false = up
-  function move(current, upDown) {
-    if (upDown) {
-      if ($(current).next().length) {
-        var nextPage = $(current).next(),
-          section = $(current).closest(".wrapper");
-        section.animate({ "top": "-=100vh" }, 500);
-        $(current).removeClass("current");
-        $(nextPage).addClass("current");
-        console.log("pageDown", $(".current").attr("id"));
-        checkcurrent();
+    //upDown bool true = down ... false = up
+    function move(current, upDown) {
+      if (upDown) {
+        if ($(current).next().length) {
+          var nextPage = $(current).next(),
+            section = $(current).closest(".pswrapper");
+          section.animate({ "top": "-=100vh" }, 500);
+          $(current).removeClass("current");
+          $(nextPage).addClass("current");
+        }
+      } else {
+        if ($(current).prev().length) {
+          var prevPage = $(current).prev(),
+            section = $(current).closest(".pswrapper");
+          section.animate({ "top": "+=100vh" }, 500);
+          $(current).removeClass("current");
+          $(prevPage).addClass("current");
+        }
       }
-    } else {
-      if ($(current).prev().length) {
-        var prevPage = $(current).prev(),
-          section = $(current).closest(".wrapper");
-        section.animate({ "top": "+=100vh" }, 500);
-        $(current).removeClass("current");
-        $(prevPage).addClass("current");
-        console.log("pageUp", $(".current").attr("id"));
-        checkcurrent();
+      checkcurrent();
+      if (($(current).prev().length) < 0  ||  ($(current).next().length) < 0) {
+        shakeLast();
       }
     }
-  }
-
+  
   $(document).on("keydown", function (e) {
     //PgDown || DownArrow key
     if (
@@ -78,7 +77,6 @@ $(document).ready(function () {
     e.preventDefault();
     if ($(".current").next().length) {
       move($(".current"), true);
-      console.log("next Button");
     }
   });
 
@@ -88,7 +86,7 @@ $(document).ready(function () {
   });
 
   function goToTop() {
-    $(".wrapper").animate({ "top": "0" }, 1000);
+    $(".pswrapper").animate({ "top": "0" }, 1000);
     $(".page").removeClass("current");
     $(".page").first().addClass("current");
     checkcurrent();
@@ -96,11 +94,10 @@ $(document).ready(function () {
 
   function goToEnd() {
     var pageCount = $(".page").length;
-    $(".wrapper").animate({ "top": (-100 * (pageCount - 1)) + "vh" }, 1000);
+    $(".pswrapper").animate({ "top": (-100 * (pageCount - 1)) + "vh" }, 1000);
     $(".page").removeClass("current");
     $(".page").last().addClass("current");
     checkcurrent();
-    console.log("pageCount:", pageCount);
   };
 
   //page navigation nodes generator
@@ -122,10 +119,9 @@ $(document).ready(function () {
     var bulIndex = $(this).index();
     var pageOffset = (bulIndex * -100) + "vh";
     $(this).click(function () {
-      $(".wrapper").animate({ "top": pageOffset }, 700);
+      $(".pswrapper").animate({ "top": pageOffset }, 700);
       $(".current").removeClass("current");
       $(".page:eq(" + bulIndex + ")").addClass("current");
-      console.log("bulIndex =", bulIndex, "slideOffset =", pageOffset);
       checkcurrent();
     });
   });
@@ -137,7 +133,6 @@ $(document).ready(function () {
       if (pBulIndex == $(".current").index()) {
         $(".pageNav a").removeClass("current-bull");
         $(".pageNav a:eq(" + pBulIndex + ")").addClass("current-bull");
-        console.log(pBulIndex, "=", $(".current").index(), "checkcurrent fired");
       }
     });
   }
@@ -176,7 +171,6 @@ $(document).ready(function () {
     var slideCount = $(this).children().length;
     var autoWidth = $(this);
     autoWidth.css({ width: autoWidth.width() * slideCount });
-    console.log($(this).parent().attr("id"), "slides:", slideCount);
   });
 
   //get offset +100vw for each slide from index
@@ -190,28 +184,22 @@ $(document).ready(function () {
   });
   $(".slideNavL").click(function () {
     slideLeft();
-    console.log("left arrow Nav");
   });
   $(".slideNavR").click(function () {
     slideRight();
-    console.log("right arrow Nav");
   });
 
   //left/right arrow keys & wheel for mouse with X-axis slide scroll
   $(document).on("keydown wheel", function (e) {
-    //if (e.keyCode === 37 || e.originalEvent.deltaX > 1 && triggers > 5) {
     if (e.keyCode === 37 || e.originalEvent.deltaX > 1) {
       slideLeft();
       triggers = 0;
-      console.log("slide to left");
     }
   });
   $(document).on("keydown wheel", function (e) {
-    //if (e.keyCode === 39 || e.originalEvent.deltaX < -1 && triggers > 5) {
     if (e.keyCode === 39 || e.originalEvent.deltaX < -1) {
       slideRight();
       triggers = 0;
-      console.log("slide to right");
     }
   });
 
@@ -227,26 +215,26 @@ $(document).ready(function () {
   });
 
   //assign current class for slide nav bullets
+  const slideBullet = $(".slideBul a");
+
   function checkCurBul() {
-    $(".slideBul a").each(function () {
+    slideBullet.each(function () {
       var sBulIndex = $(this).index();
       if (sBulIndex == $(".current .curSlide").index()) {
         $(".current .slide-nav-bull").removeClass("current-bull");
         $(".current .slide-nav-bull:eq(" + sBulIndex + ")").addClass("current-bull");
-        console.log(sBulIndex, "=", $(".current .curSlide").index(), "checkCurBul fired");
       }
     });
   }
 
   //slide bullet click function
-  $(".slideBul a").each(function () {
+  slideBullet.each(function () {
     var sBulIndex = $(this).index();
     var slideOffset = (sBulIndex * -100) + "vw";
     $(this).click(function () {
       $(".current .slideDiv").animate({ "left": slideOffset }, 300);
       $(".current .curSlide").removeClass("curSlide");
       $(".current .spslide:eq(" + sBulIndex + ")").addClass("curSlide");
-      console.log("sBulIndex =", sBulIndex, "slideOffset =", slideOffset);
       checkCurBul();
     });
   });
@@ -268,9 +256,9 @@ $(document).ready(function () {
     if ((checkTime - firstExecution) > interval) {
       firstExecution = checkTime;
       move($(".current"), true);
-      console.log('scrollimit start');
+      //console.log('scrollimit start');
     } else {
-      console.log('dont scroll yet');
+      //console.log('dont scroll yet');
     }
   }
   function scrollimitUp() { // this is ugly repeating for now..
@@ -279,9 +267,8 @@ $(document).ready(function () {
     if ((checkTime - firstExecution) > interval) {
       firstExecution = checkTime;
       move($(".current"), false);
-      console.log('scrollimit start');
     } else {
-      console.log('dont scroll yet');
+      //console.log('dont scroll yet');
     }
   }
 
@@ -307,90 +294,79 @@ $(document).ready(function () {
   };
 
 
-  //swipe navigation with drag
+  //touch/mouse navigation with drag
   var startingX, startingY, movingX, movingY;
-  
+
   let isDragging = false,
     draggingY = 0,
     draggingX = 0
+  const pspswrapper = document.querySelector(".pswrapper");
 
-  $(document).on("touchstart", function touchStart(evt) {
-    startingX = evt.touches[0].clientX;
-    startingY = evt.touches[0].clientY;
+
+  pspswrapper.addEventListener("pointerdown", pointerDown);
+  pspswrapper.addEventListener("pointerup", pointerUp);
+  pspswrapper.addEventListener("pointercancel", pointerUp);
+
+  function pointerDown(e) {
+    //pspswrapper.setPointerCapture(e.pointerId);
+    startingX = e.pageX;
+    startingY = e.pageY;
     isDragging = true;
-  });
-
-$(document).on("touchmove", function touchMove(evt) {
-  movingX = evt.touches[0].clientX;
-  movingY = evt.touches[0].clientY;
-  //dragging enabled in one axis only:
-  var dragY =  Math.abs(movingY - startingY);
-  var dragX =  Math.abs(movingX - startingX);
-  if (dragY > dragX) {
-    movingX = 0;
-  dragYPosition();
-  } else {
-    movingY = 0;
-    dragXPosition();
+    pspswrapper.addEventListener("pointermove", pointerMove);
   }
-  console.log("Y:", (movingY - startingY) , "X:", (movingX - startingX));
-  console.log("dragY:", dragY , "dragX:", dragX);
-});
 
-  $(document).on("touchend", function touchEnd() {
-    if (startingX + 50 < movingX && draggingX > 50) {
-      slideLeft();
-      console.log('right');
-    } else if (startingX - 50 > movingX && draggingX < -50) {
-      slideRight();
-      console.log('left');
+  function pointerMove(e) {
+    //e.preventDefault();
+    movingX = e.pageX;
+    movingY = e.pageY;
+    if (isDragging = true) {
+      XorYdrag();
+      pspswrapper.classList.add("grabbing");
     }
-    if (startingY + 50 < movingY && draggingY > 50) {
+  }
+
+  function pointerUp() {
+    if (startingX + 30 < movingX && draggingX > 30) {
+      slideLeft();
+    } else if (startingX - 30 > movingX && draggingX < -30) {
+      slideRight();
+    }
+    if (startingY + 30 < movingY && draggingY > 30) {
       move($(".current"), false);
-      console.log('down');
-    } else if (startingY - 50 > movingY && draggingY < -50) {
+    } else if (startingY - 30 > movingY && draggingY < -30) {
       move($(".current"), true);
-      console.log('up');
     }
     isDragging = false;
-    //console.log("draggingY:", draggingY);
-    //console.log("draggingX:", draggingX);
     draggingY = 0;
     draggingX = 0;
-    $(".wrapper").css("transform", "translateY(" + draggingY + "px)");
+    pspswrapper.classList.remove("grabbing");
+    $(".pswrapper").css("transform", "translateY(" + draggingY + "px)");
     $(".current .slideDiv").css("transform", "translateX(" + draggingX + "px)");
-  });
+
+    pspswrapper.removeEventListener("pointermove", pointerMove);
+  }
+
+  //dragging enabled in one axis only:
+  function XorYdrag() {
+    draggingY = Math.abs(movingY - startingY);
+    draggingX = Math.abs(movingX - startingX);
+    if (draggingY > draggingX) {
+      draggingX = 0;
+      dragYPosition();
+    } else {
+      draggingY = 0;
+      dragXPosition();
+    }
+  }
 
   function dragYPosition() {
     draggingY = movingY - startingY;
-    $(".wrapper").css("transform", "translateY(" + draggingY + "px)");
-    //console.log(draggingY);
+    $(".pswrapper").css("transform", "translateY(" + draggingY + "px)");
   }
 
   function dragXPosition() {
     draggingX = movingX - startingX;
     $(".current .slideDiv").css("transform", "translateX(" + draggingX + "px)");
-    //console.log(draggingX);
   }
-
-
- /*
-    //mouse drag
-    movingX = getPositionX;
-    movingY = getPositionY;
-  
-    function getPositionY(event) {
-      return event.type.includes('mouse')
-        ? event.pageY
-        : event.touches[0].clientY
-    }
-  
-    function getPositionX(event) {
-      return event.type.includes('mouse')
-        ? event.pageX
-        : event.touches[0].clientX
-    }
- */
-
 
 });
