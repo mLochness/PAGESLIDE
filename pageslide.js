@@ -1,62 +1,94 @@
 $(document).ready(function () {
 
-  $(".page").first().addClass("current");
+  var vHeight;
+  var vWidth;
 
-  //get offset +100vh for each page from index
-  $(".page").each(function () {
-    var pageIndex = $(this).index();
-    $(this).css({ "top": (100 * pageIndex) + "vh" });
+  getWindowSize();
+  pagesLayout();
+
+  function getWindowSize() {
+    vHeight = document.documentElement.clientHeight;
+    document.documentElement.style.setProperty('--vHeight', `${vHeight}px`);
+
+    vWidth = $(document).width();
+
+    $(".heightInfo").text(window.screen.height + "px");
+    $(".pageMove").text(vHeight + "px");
+  }
+
+  $(".page").first().addClass("current");
+  var holdResize;
+  $(window).resize(function () {
+    getWindowSize();
+    clearTimeout(holdResize);
+    holdResize = setTimeout(pagesLayout, 1000);
+    var curIndex = $(".current").index();
+    var topOffset = (curIndex * -vHeight) + "px";
+    $(".pswrapper").animate({ "top": topOffset }, 300);
   });
+
+
+
+  //get offset 1 window height for each page from index
+  function pagesLayout() {
+    $(".page").each(function () {
+      var pageIndex = $(this).index();
+      $(this).css({ "top": (vHeight * pageIndex) + "px" });
+    });
+    console.log("pagesLayout done");
+  }
 
   //page bullet click function
   $(".pageNav a").each(function () {
     var bulIndex = $(this).index();
-    var pageOffset = (bulIndex * -100) + "vh";
+    //var pageOffset = (bulIndex * -100) + "vh";
+    var pageOffset = (bulIndex * -vHeight) + "px";
     $(this).click(function () {
-      $(".pswrapper").animate({ "top": pageOffset }, 300);
+      $(".pswrapper").animate({ "top": pageOffset }, 500);
       $(".current").removeClass("current");
       $(".page:eq(" + bulIndex + ")").addClass("current");
       checkcurrent();
     });
   });
 
-    //upDown bool true = down ... false = up
-    function move(current, upDown) {
-      if (upDown) {
-        if ($(current).next().length) {
-          var nextPage = $(current).next(),
-            section = $(current).closest(".pswrapper");
-          section.animate({ "top": "-=100vh" }, 500);
-          $(current).removeClass("current");
-          $(nextPage).addClass("current");
-        }
-      } else {
-        if ($(current).prev().length) {
-          var prevPage = $(current).prev(),
-            section = $(current).closest(".pswrapper");
-          section.animate({ "top": "+=100vh" }, 500);
-          $(current).removeClass("current");
-          $(prevPage).addClass("current");
-        }
-      }
-      checkcurrent();
-      if (($(current).prev().length) < 0  ||  ($(current).next().length) < 0) {
-        shakeLast();
-      }
+  function moveUp() {
+    current = $(".current");
+    if ($(current).next().length) {
+      var nextPage = $(current).next(),
+        section = $(current).closest(".pswrapper");
+      //section.animate({ "top": "-=100vh" }, 500);
+      section.animate({ "top": "-=" + vHeight + "px" }, 500);
+      $(current).removeClass("current");
+      $(nextPage).addClass("current");
     }
-  
+    checkcurrent();
+  }
+
+  function moveDown() {
+    current = $(".current");
+    if ($(current).prev().length) {
+      var prevPage = $(current).prev(),
+        section = $(current).closest(".pswrapper");
+      //section.animate({ "top": "+=100vh" }, 500);
+      section.animate({ "top": "+=" + vHeight + "px" }, 500);
+      $(current).removeClass("current");
+      $(prevPage).addClass("current");
+    }
+    checkcurrent();
+  }
+
   $(document).on("keydown", function (e) {
     //PgDown || DownArrow key
     if (
       e.keyCode === 34 || e.keyCode === 40
     ) {
-      move($(".current"), true);
+      moveUp();
     }
     //PgUp || UpArrow key
     if (
       e.keyCode === 33 || e.keyCode === 38
     ) {
-      move($(".current"), false);
+      moveDown();
     }
     //Home key
     if (
@@ -76,7 +108,7 @@ $(document).ready(function () {
   $(".next-btn").click(function (e) {
     e.preventDefault();
     if ($(".current").next().length) {
-      move($(".current"), true);
+      moveUp();
     }
   });
 
@@ -117,9 +149,10 @@ $(document).ready(function () {
   //page bullet click function
   $(".pageNav a").each(function () {
     var bulIndex = $(this).index();
-    var pageOffset = (bulIndex * -100) + "vh";
+    //var pageOffset = (bulIndex * -100) + "vh";
+    var pageOffset = (bulIndex * -vHeight) + "px";
     $(this).click(function () {
-      $(".pswrapper").animate({ "top": pageOffset }, 700);
+      $(".pswrapper").animate({ "top": pageOffset }, 300);
       $(".current").removeClass("current");
       $(".page:eq(" + bulIndex + ")").addClass("current");
       checkcurrent();
@@ -141,7 +174,7 @@ $(document).ready(function () {
   function slideLeft() {
     var prevSlide = $(".current .curSlide").prev();
     if ($(prevSlide).length) {
-      $(".current .slideDiv").animate({ "left": "+=100vw" }, 300);
+      $(".current .slideDiv").animate({ "left": "+=100vw" }, 500);
       $(".current .curSlide").removeClass("curSlide");
       $(prevSlide).addClass("curSlide");
       checkCurBul();
@@ -153,7 +186,7 @@ $(document).ready(function () {
   function slideRight() {
     var nextSlide = $(".current .curSlide").next();
     if ($(nextSlide).length) {
-      $(".current .slideDiv").animate({ "left": "-=100vw" }, 300);
+      $(".current .slideDiv").animate({ "left": "-=100vw" }, 500);
       $(".current .curSlide").removeClass("curSlide");
       $(nextSlide).addClass("curSlide");
       checkCurBul();
@@ -232,7 +265,7 @@ $(document).ready(function () {
     var sBulIndex = $(this).index();
     var slideOffset = (sBulIndex * -100) + "vw";
     $(this).click(function () {
-      $(".current .slideDiv").animate({ "left": slideOffset }, 300);
+      $(".current .slideDiv").animate({ "left": slideOffset }, 500);
       $(".current .curSlide").removeClass("curSlide");
       $(".current .spslide:eq(" + sBulIndex + ")").addClass("curSlide");
       checkCurBul();
@@ -255,98 +288,128 @@ $(document).ready(function () {
     var checkTime = date.getTime();
     if ((checkTime - firstExecution) > interval) {
       firstExecution = checkTime;
-      move($(".current"), true);
-      //console.log('scrollimit start');
-    } else {
-      //console.log('dont scroll yet');
+      moveUp();
     }
   }
-  function scrollimitUp() { // this is ugly repeating for now..
+
+  function scrollimitUp() {
     var date = new Date();
     var checkTime = date.getTime();
     if ((checkTime - firstExecution) > interval) {
       firstExecution = checkTime;
-      move($(".current"), false);
-    } else {
-      //console.log('dont scroll yet');
+      moveDown();
     }
   }
 
   $(document).on("wheel", function (e) {
-    if (
-      e.originalEvent.deltaY > 1 && triggers > 0 && triggers < 100
-    ) {
+    if (e.originalEvent.deltaY > 1 && triggers > 0 && triggers < 100) {
       scrollimitDown()
       triggers = 0;
     }
-    if (
-      e.originalEvent.deltaY < -1 && triggers > 0 && triggers < 100
-    ) {
+    if (e.originalEvent.deltaY < -1 && triggers > 0 && triggers < 100) {
       scrollimitUp()
       triggers = 0;
     }
   });
 
-
-  //slide bullets on mobile overlapped by tab/address bar - position modification
-  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-    $('.slideBul').css({ "bottom": 80 + "px" });
-  };
-
+  /*
+    //slide bullets on mobile overlapped by tab/address bar - position modification
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+      $('.slideBul').css({ "bottom": 80 + "px" });
+    };
+  */
 
   //touch/mouse navigation with drag
-  var startingX, startingY, movingX, movingY;
-
-  let isDragging = false,
+  const pswrapper = document.querySelector(".pswrapper");
+  var startingX,
+    startingY,
+    movingX,
+    movingY,
+    dragYstart,
+    dragYcurrent,
+    dragYstop,
+    dragYoffset,
+    curPagePosition;
+  dragY = 0,
+    isDragging = false,
     draggingY = 0,
-    draggingX = 0
-  const pspswrapper = document.querySelector(".pswrapper");
+    draggingX = 0;
 
-
-  pspswrapper.addEventListener("pointerdown", pointerDown);
-  pspswrapper.addEventListener("pointerup", pointerUp);
-  pspswrapper.addEventListener("pointercancel", pointerUp);
+  pswrapper.addEventListener("pointerdown", pointerDown);
+  pswrapper.addEventListener("pointerup", pointerUp);
+  pswrapper.addEventListener("pointercancel", pointerUp);
 
   function pointerDown(e) {
-    //pspswrapper.setPointerCapture(e.pointerId);
+    //pswrapper.setPointerCapture(e.pointerId);
+    dragYstart = e.clientY;
+    //console.log("dragYstart:", dragYstart);
+    curPagePosition = ($(".current").index()) * vHeight;
     startingX = e.pageX;
     startingY = e.pageY;
+
     isDragging = true;
-    pspswrapper.addEventListener("pointermove", pointerMove);
+    pswrapper.addEventListener("pointermove", pointerMove);
   }
 
   function pointerMove(e) {
-    //e.preventDefault();
+    e.preventDefault();
+
     movingX = e.pageX;
     movingY = e.pageY;
+    dragYcurrent = e.clientY;
     if (isDragging = true) {
       XorYdrag();
-      pspswrapper.classList.add("grabbing");
+      pswrapper.classList.add("grabbing");
     }
   }
 
-  function pointerUp() {
+  function pointerUp(e) {
+    dragYstop = e.clientY;
+    dragYoffset = dragYstart - dragYstop;
+
+    //dragging prevents firing on click
     if (startingX + 30 < movingX && draggingX > 30) {
       slideLeft();
     } else if (startingX - 30 > movingX && draggingX < -30) {
       slideRight();
     }
-    if (startingY + 30 < movingY && draggingY > 30) {
-      move($(".current"), false);
-    } else if (startingY - 30 > movingY && draggingY < -30) {
-      move($(".current"), true);
+    if (dragYoffset < 30 && dragY > 30 && $(".current").prev().length) {
+      dragmoveDown();
     }
-    isDragging = false;
-    draggingY = 0;
-    draggingX = 0;
-    pspswrapper.classList.remove("grabbing");
-    $(".pswrapper").css("transform", "translateY(" + draggingY + "px)");
-    $(".current .slideDiv").css("transform", "translateX(" + draggingX + "px)");
+    else if (dragYoffset > 30 && dragY < -30 && $(".current").next().length) {
+      dragmoveUp();
+    }
+    else {
+      $(".pswrapper").animate({ "top": -curPagePosition + "px" }, 100);
+    }
 
-    pspswrapper.removeEventListener("pointermove", pointerMove);
+    isDragging = false;
+    startingX = 0;
+    startingY = 0;
+    movingX = 0;
+    movingY = 0;
+
+    $(".current .slideDiv").css({
+      "transition": "transform 0.25s ease-out 0.25s",
+      "transform": "translateX(0)"
+    });
+
+    draggingX = 0;
+    //   draggingY = 0;
+
+
+    //x-drag css 
+    setTimeout(function () {
+      $(".pswrapper").css({ "transition": "none" });
+      $(".current .slideDiv").css({ "transition": "none" });
+    }, 500);
+
+
+    pswrapper.removeEventListener("pointermove", pointerMove);
+    pswrapper.classList.remove("grabbing");
   }
 
-  //dragging enabled in one axis only:
+  //dragging enabled in one axis only - buggy so far:
   function XorYdrag() {
     draggingY = Math.abs(movingY - startingY);
     draggingX = Math.abs(movingX - startingX);
@@ -360,13 +423,49 @@ $(document).ready(function () {
   }
 
   function dragYPosition() {
-    draggingY = movingY - startingY;
-    $(".pswrapper").css("transform", "translateY(" + draggingY + "px)");
+    dragY = dragYcurrent - dragYstart;
+    $(".pswrapper").css("top", -curPagePosition + dragY + "px");
   }
 
   function dragXPosition() {
     draggingX = movingX - startingX;
     $(".current .slideDiv").css("transform", "translateX(" + draggingX + "px)");
+  }
+
+  function dragmoveUp() {
+    var finishDrag = vHeight - dragYoffset;
+    current = $(".current");
+    if ($(current).next().length) {
+      var nextPage = $(current).next();
+      section = $(current).closest(".pswrapper");
+      section.animate({ "top": "-=" + finishDrag + "px" }, 250);
+      $(current).removeClass("current");
+      $(nextPage).addClass("current");
+    }/* else {
+      section.animate({ "top": "-=" + dragYoffset + "px" }, 100);
+    }*/
+    checkcurrent();
+    //console.log("finishDrag:", finishDrag);
+    dragYoffset = 0;
+    dragY = 0;
+  }
+
+  function dragmoveDown() {
+    var finishDrag = vHeight + dragYoffset;
+    current = $(".current");
+    if ($(current).prev().length) {
+      var prevPage = $(current).prev(),
+        section = $(current).closest(".pswrapper");
+      section.animate({ "top": "+=" + finishDrag + "px" }, 250);
+      $(current).removeClass("current");
+      $(prevPage).addClass("current");
+    } /*else {
+      section.animate({ "top": "+=" + dragYoffset + "px" }, 100);
+    }*/
+    checkcurrent();
+    //console.log("finishDrag:", finishDrag);
+    dragYoffset = 0;
+    dragY = 0;
   }
 
 });
