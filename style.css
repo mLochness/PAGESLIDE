@@ -1,4 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,400;0,600;0,800;0,900;1,800;1,900&display=swap");
+:root {
+  --vHeight: 100%;
+}
 body {
   margin: 0;
   font-family: Montserrat;
@@ -9,17 +12,15 @@ body {
   position: fixed;
   width: 100vw;
   height: 100vh;
+  height: var(--vHeight);
+  /*min-height: -webkit-fill-available;*/
   top: 0;
-  transform: translateY(0);
-  transition: transform 0.5s ease-out;
-  /*overflow: hidden; (switched from jQuery scrollTop to CSS top)*/
-  /*scroll-behavior: smooth; (!causes scrollTop not working in iOS!)*/
+  touch-action: none; /* chrome mobile browsers pointermove fix */
 }
 .page {
-  /*position: relative;*/
   position: absolute;
   width: 100vw;
-  height: 100vh;
+  height: var(--vHeight);
   top: 0;
   display: grid;
 }
@@ -62,7 +63,6 @@ body {
   color: #ffffff40;
   position: relative;
   top: -5vw;
-  cursor: pointer;
 }
 .pgName{
   margin: auto;
@@ -166,10 +166,9 @@ button:hover {
   position: absolute;
   left: 0vw;
   width: 100vw;
-  transition: transform 0.5s ease-out;
 }
 .spslide {
-  height: 100%; /* 100vh - tab bar on mobile hides bottom bullets */
+  height: var(--vHeight);
   width: 100vw;
   position: absolute;
   top: 0;
@@ -220,7 +219,7 @@ button:hover {
   bottom: 10px;
   left: 10px;
   color: #ffffff87;
-  font-size: 0.85em;
+  font-size: 0.7em;
 }
 
 .grabbing {
