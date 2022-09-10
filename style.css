@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,400;0,600;0,800;0,900;1,800;1,900&display=swap");
 :root {
   --vHeight: 100%;
+  --vWidth: 100vw;
 }
 body {
   margin: 0;
@@ -19,7 +20,8 @@ body {
 }
 .page {
   position: absolute;
-  width: 100vw;
+  /*width: 100vw;*/
+  width: var(--vWidth);
   height: var(--vHeight);
   top: 0;
   display: grid;
@@ -91,10 +93,6 @@ button:hover {
   background-color: #fff;
   color: #2b0b0b;
 }
-.current {
-  width: 100%;
-  height: 100%;
-}
 .pageNav {
   position: fixed;
   top: 50vh;
@@ -161,15 +159,15 @@ button:hover {
 }
 .slideDiv {
   display: flex;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
   position: absolute;
-  left: 0vw;
-  width: 100vw;
+  left: 0;
+  width: var(--vWidth);
 }
 .spslide {
   height: var(--vHeight);
-  width: 100vw;
+  width: var(--vWidth);
   position: absolute;
   top: 0;
   display: flex;

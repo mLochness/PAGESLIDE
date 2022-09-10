@@ -11,9 +11,6 @@ $(document).ready(function () {
     document.documentElement.style.setProperty('--vHeight', `${vHeight}px`);
     vWidth = document.documentElement.clientWidth;
     document.documentElement.style.setProperty('--vWidth', `${vWidth}px`);
-    // print bottom info
-    $(".heightInfo").text(window.screen.width + "px");
-    //$(".pageMove").text(vHeight + "px");
   }
 
   //get offset 1 window height for each page from index
@@ -22,7 +19,6 @@ $(document).ready(function () {
       var pageIndex = $(this).index();
       $(this).css({ "top": (vHeight * pageIndex) + "px" });
     });
-    //console.log("pagesLayout done");
   }
 
   $(".page").first().addClass("current");
@@ -37,7 +33,7 @@ $(document).ready(function () {
       $(this).css({ width: vWidth * slideCount + "px" });
     });
   }
-  
+
   function slidesLayout() {
     //get offset +1 screen width for each slide
     $(".spslide").each(function () {
@@ -46,8 +42,8 @@ $(document).ready(function () {
     });
   }
 
-  // fix for page freezing on window resize 
   function asyncProxy(fn, options, ctx) {
+    // fix for page freezing on window resize 
     //  Author: yanick.rochon@gmail.com  //  License: MIT
     var timer = null;
     var counter = 0;
@@ -90,16 +86,25 @@ $(document).ready(function () {
     pagesLayout();
     slidesContainerWidth();
     slidesLayout();
-    var curIndex = $(".current").index();
-    var topOffset = (curIndex * -vHeight) + "px";
-    $(".pswrapper").animate({ "top": topOffset }, 300);
-    console.log("pagesLayout done");
+    alignPageAfterResize();
+    alignSlideAfterResize();
   }, {
     delay: 250
   });
 
   $(window).on('resize', holdResize);
 
+  function alignPageAfterResize() {
+    var curIndex = $(".current").index();
+    var topOffset = (curIndex * -vHeight) + "px";
+    $(".pswrapper").animate({ "top": topOffset }, 300);
+  }
+
+  function alignSlideAfterResize() {
+    var curSlideIndex = $(".current .curSlide").index();
+    var leftOffset = (curSlideIndex * -vWidth) + "px";
+    $(".current .slideDiv").animate({ "left": leftOffset }, 300);
+  }
 
   //page bullet click function
   $(".pageNav a").each(function () {
@@ -240,8 +245,6 @@ $(document).ready(function () {
       $(".current .curSlide").removeClass("curSlide");
       $(prevSlide).addClass("curSlide");
       checkCurBul();
-    } else {
-      shakeLast();
     }
   }
   // slide to right
@@ -252,13 +255,7 @@ $(document).ready(function () {
       $(".current .curSlide").removeClass("curSlide");
       $(nextSlide).addClass("curSlide");
       checkCurBul();
-    } else {
-      shakeLast();
     }
-  }
-  // shake if no more slides exist
-  function shakeLast() {
-    $(".current .curSlide").effect("shake", { times: 1 }, 200);
   }
 
   $(".slideDiv").each(function () {
@@ -398,13 +395,12 @@ $(document).ready(function () {
     dragXstart = e.clientX;
     curPagePosition = ($(".current").index()) * vHeight;
     curSlidePosition = ($(".current .curSlide").index()) * vWidth;
-
     isDragging = true;
     pswrapper.addEventListener("pointermove", pointerMove);
   }
 
   function pointerMove(e) {
-    e.preventDefault();
+    //e.preventDefault();
     dragYcurrent = e.clientY;
     dragXcurrent = e.clientX;
     if (isDragging = true) {
@@ -422,41 +418,46 @@ $(document).ready(function () {
     //dragging prevents firing on click
     if (dragXoffset < 30 && dragX > 30 && $(".current .curSlide").prev().length) {
       dragmoveRight();
-    } 
+    }
     else if (dragXoffset > 30 && dragX < -30 && $(".current .curSlide").next().length) {
       dragmoveLeft();
     }
-    if (dragYoffset < 30 && dragY > 30 && $(".current").prev().length) {
+    else if (dragYoffset < 30 && dragY > 30 && $(".current").prev().length) {
       dragmoveDown();
     }
     else if (dragYoffset > 30 && dragY < -30 && $(".current").next().length) {
       dragmoveUp();
     }
     else {
+      //not a drag, get back to position 
       $(".pswrapper").animate({ "top": -curPagePosition + "px" }, 100);
-      
-      
-      //******************************************************* */
-      
-      //$(".current .slideDiv").animate({ "left": -curSlidePosition + "px" }, 100);
+      $(".current .slideDiv").animate({ "left": -curSlidePosition + "px" }, 100);
     }
-    
+
     isDragging = false;
+    dragYlock = false;
+    dragXlock = false;
 
     pswrapper.removeEventListener("pointermove", pointerMove);
     pswrapper.classList.remove("grabbing");
   }
 
-  //dragging enabled in one axis only - buggy so far:
+var dragYlock = false;
+var dragXlock = false;
+
+  //dragging in one axis at a time
   function XorYdrag() {
     draggingY = Math.abs(dragYcurrent - dragYstart);
     draggingX = Math.abs(dragXcurrent - dragXstart);
-    if (draggingY > draggingX) {
-      //draggingX = 0;
+    //if (draggingY > draggingX) {
+    if (draggingY > 7 && dragXlock === false) {
+      dragYlock = true;
       dragYPosition();
-    } else {
-      //draggingY = 0;
-      dragXPosition();
+    } 
+    //else if (draggingX > draggingY && dragLock === false) {
+      if (draggingX > 7 && dragYlock === false) {
+      dragXlock = true;
+      dragXPosition()
     }
   }
 
@@ -495,7 +496,7 @@ $(document).ready(function () {
       section.animate({ "top": "+=" + finishDrag + "px" }, 250);
       $(current).removeClass("current");
       $(prevPage).addClass("current");
-    } 
+    }
     checkcurrent();
     dragYoffset = 0;
     dragY = 0;
@@ -512,13 +513,8 @@ $(document).ready(function () {
       $(nextSlide).addClass("curSlide");
     }
     checkCurBul();
-    console.log("dragmoveLeft");
-    //console.log("dragX:", dragX);
-    console.log("dragXoffset:", dragXoffset);
-    console.log("finishDrag: +=", finishDrag);
     dragXoffset = 0;
     dragX = 0;
-    
   }
 
   function dragmoveRight() {
@@ -530,15 +526,10 @@ $(document).ready(function () {
       section.animate({ "left": "+=" + finishDrag + "px" }, 250);
       $(current).removeClass("curSlide");
       $(prevSlide).addClass("curSlide");
-    } 
+    }
     checkCurBul();
-    console.log("dragmoveRight");
-    //console.log("dragX:", dragX);
-    console.log("dragXoffset:", dragXoffset);
-    console.log("finishDrag: -=", finishDrag);
     dragXoffset = 0;
     dragX = 0;
-   
   }
 
 });
