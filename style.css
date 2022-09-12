@@ -11,6 +11,7 @@ body {
 }
 .pswrapper {
   position: fixed;
+  box-sizing: border-box;
   width: 100vw;
   height: 100vh;
   height: var(--vHeight);
@@ -25,6 +26,7 @@ body {
   height: var(--vHeight);
   top: 0;
   display: grid;
+  box-sizing: border-box;
 }
 .page1 {
   background-color: #74b2d0;
@@ -142,7 +144,7 @@ button:hover {
   clip-path: polygon(0 0, 0% 100%, 100% 50%);
   transform: scale(0.85);
   opacity: 0.35;
-  transition: all 0.3s ease;
+  transition: all 0.5s ease;
   cursor: pointer;
  }
 .slideNavR {
@@ -154,8 +156,7 @@ button:hover {
   clip-path: polygon(0 50%, 100% 100%, 100% 0);
  }
 .slideNav:hover {
-  opacity: 1;
-  transform: scale(1);
+  opacity: 1 !important;
 }
 .slideDiv {
   display: flex;
@@ -219,11 +220,9 @@ button:hover {
   color: #ffffff87;
   font-size: 0.7em;
 }
-
 .grabbing {
   cursor: grab;
 }
-
 
 @media (max-width: 768px){
 .plinkdesc, .slinkdesc {
