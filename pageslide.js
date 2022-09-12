@@ -260,6 +260,7 @@ $(document).ready(function () {
 
   $(".slideDiv").each(function () {
     $(this).find(".spslide").first().addClass("curSlide");
+    $(".slideNavL").css("left", "-50px");
   });
   $(".slideNavL").click(function () {
     slideLeft();
@@ -293,15 +294,32 @@ $(document).ready(function () {
     $(this).closest(".page").find(".slideBul a").first().addClass("current-bull");
   });
 
-  //assign current class for slide nav bullets
+  //assign current class for slide nav bullets + show L/R nav arrows
   const slideBullet = $(".slideBul a");
-
+    
   function checkCurBul() {
+    var lastSlideIndex = $(".current .spslide").last().index();
     slideBullet.each(function () {
       var sBulIndex = $(this).index();
       if (sBulIndex == $(".current .curSlide").index()) {
         $(".current .slide-nav-bull").removeClass("current-bull");
         $(".current .slide-nav-bull:eq(" + sBulIndex + ")").addClass("current-bull");
+      
+        if (sBulIndex == 0) {
+          $(".current .slideNavL").css("left", "-50px");
+          $(".current .slideNavR").css("right", "50px");
+        }
+        else if (sBulIndex == lastSlideIndex ) {
+          $(".current .slideNavR").css("right", "-50px");
+          $(".current .slideNavL").css("left", "50px");
+        }
+        else {
+          $(".current .slideNavL").css("left", "50px");
+          $(".current .slideNavR").css("right", "50px");
+        }
+      console.log("sBulIndex:", sBulIndex);
+      console.log("lastSlideIndex:", lastSlideIndex);
+      console.log("currentSlideIndex:", $(".current .curSlide").index());
       }
     });
   }
@@ -442,8 +460,8 @@ $(document).ready(function () {
     pswrapper.classList.remove("grabbing");
   }
 
-var dragYlock = false;
-var dragXlock = false;
+  var dragYlock = false;
+  var dragXlock = false;
 
   //dragging in one axis at a time
   function XorYdrag() {
@@ -453,9 +471,9 @@ var dragXlock = false;
     if (draggingY > 7 && dragXlock === false) {
       dragYlock = true;
       dragYPosition();
-    } 
+    }
     //else if (draggingX > draggingY && dragLock === false) {
-      if (draggingX > 7 && dragYlock === false) {
+    if (draggingX > 7 && dragYlock === false) {
       dragXlock = true;
       dragXPosition()
     }
