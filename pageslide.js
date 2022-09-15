@@ -5,12 +5,20 @@ $(document).ready(function () {
 
   getWindowSize();
   pagesLayout();
+  
 
   function getWindowSize() {
     vHeight = document.documentElement.clientHeight;
+    //vHeight = window.innerHeight;
     document.documentElement.style.setProperty('--vHeight', `${vHeight}px`);
     vWidth = document.documentElement.clientWidth;
     document.documentElement.style.setProperty('--vWidth', `${vWidth}px`);
+    $(".heightInfo").text(vHeight + "px");
+    $(".screenHeightInfo").text(window.screen.height + "px");
+    $(".widthInfo").text(vWidth + "px");
+    $(".screenWidthInfo").text(window.screen.width + "px");
+    $(".pixratio").text(window.devicePixelRatio);
+    
   }
 
   //get offset 1 window height for each page from index
@@ -317,9 +325,6 @@ $(document).ready(function () {
           $(".current .slideNavL").css("left", "50px");
           $(".current .slideNavR").css("right", "50px");
         }
-      console.log("sBulIndex:", sBulIndex);
-      console.log("lastSlideIndex:", lastSlideIndex);
-      console.log("currentSlideIndex:", $(".current .curSlide").index());
       }
     });
   }
@@ -397,8 +402,8 @@ $(document).ready(function () {
     curSlidePosition = 0,
     dragY = 0,
     dragX = 0,
-    isDragging = false,
-    draggingY = 0,
+    isDragging = false;
+    draggingY = 0;
     draggingX = 0;
 
   pswrapper.addEventListener("pointerdown", pointerDown);
@@ -458,6 +463,7 @@ $(document).ready(function () {
 
     pswrapper.removeEventListener("pointermove", pointerMove);
     pswrapper.classList.remove("grabbing");
+
   }
 
   var dragYlock = false;
@@ -467,12 +473,10 @@ $(document).ready(function () {
   function XorYdrag() {
     draggingY = Math.abs(dragYcurrent - dragYstart);
     draggingX = Math.abs(dragXcurrent - dragXstart);
-    //if (draggingY > draggingX) {
     if (draggingY > 7 && dragXlock === false) {
       dragYlock = true;
       dragYPosition();
     }
-    //else if (draggingX > draggingY && dragLock === false) {
     if (draggingX > 7 && dragYlock === false) {
       dragXlock = true;
       dragXPosition()
@@ -499,7 +503,13 @@ $(document).ready(function () {
       section.animate({ "top": "-=" + finishDrag + "px" }, 250);
       $(current).removeClass("current");
       $(nextPage).addClass("current");
+      
+      correctTopOffset();
+
     }
+    $(".finished").text(finishDrag + "px");
+    $(".dragMove").text(dragYoffset + "px");
+
     checkcurrent();
     dragYoffset = 0;
     dragY = 0;
@@ -514,7 +524,13 @@ $(document).ready(function () {
       section.animate({ "top": "+=" + finishDrag + "px" }, 250);
       $(current).removeClass("current");
       $(prevPage).addClass("current");
+
+      correctTopOffset();
+
     }
+    $(".finished").text(finishDrag + "px");
+    $(".dragMove").text(dragYoffset + "px");
+
     checkcurrent();
     dragYoffset = 0;
     dragY = 0;
@@ -530,6 +546,9 @@ $(document).ready(function () {
       $(current).removeClass("curSlide");
       $(nextSlide).addClass("curSlide");
     }
+    $(".finished").text(finishDrag + "px");
+    $(".dragMove").text(dragXoffset + "px");
+
     checkCurBul();
     dragXoffset = 0;
     dragX = 0;
@@ -545,9 +564,21 @@ $(document).ready(function () {
       $(current).removeClass("curSlide");
       $(prevSlide).addClass("curSlide");
     }
+    $(".finished").text(finishDrag + "px");
+    $(".dragMove").text(dragXoffset + "px");
+
     checkCurBul();
     dragXoffset = 0;
     dragX = 0;
   }
+
+ //iOs (height - drag) calculation not precise
+ function correctTopOffset() {
+  curPagePosition = ($(".current").index()) * -vHeight;
+  $(".pswrapper").animate({ "top": curPagePosition + "px" }, 100);
+  //$(".topOffsetInfo").text($(".pswrapper").css("top"));
+  $(".topOffsetInfo").text(curPagePosition + "px");
+  console.log(curPagePosition);
+ };
 
 });
