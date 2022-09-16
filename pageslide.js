@@ -12,13 +12,7 @@ $(document).ready(function () {
     //vHeight = window.innerHeight;
     document.documentElement.style.setProperty('--vHeight', `${vHeight}px`);
     vWidth = document.documentElement.clientWidth;
-    document.documentElement.style.setProperty('--vWidth', `${vWidth}px`);
-    $(".heightInfo").text(vHeight + "px");
-    $(".screenHeightInfo").text(window.screen.height + "px");
-    $(".widthInfo").text(vWidth + "px");
-    $(".screenWidthInfo").text(window.screen.width + "px");
-    $(".pixratio").text(window.devicePixelRatio);
-    
+    document.documentElement.style.setProperty('--vWidth', `${vWidth}px`);    
   }
 
   //get offset 1 window height for each page from index
@@ -277,15 +271,15 @@ $(document).ready(function () {
     slideRight();
   });
 
-  //left/right arrow keys & wheel for mouse with X-axis slide scroll
-  $(document).on("keydown wheel", function (e) {
-    if (e.keyCode === 37 || e.originalEvent.deltaX > 1) {
+  //left/right arrow keys
+  $(document).on("keydown", function (e) {
+    if (e.keyCode === 37) {
       slideLeft();
       triggers = 0;
     }
   });
   $(document).on("keydown wheel", function (e) {
-    if (e.keyCode === 39 || e.originalEvent.deltaX < -1) {
+    if (e.keyCode === 39) {
       slideRight();
       triggers = 0;
     }
@@ -345,7 +339,7 @@ $(document).ready(function () {
   // fired wheel/touchmove or swipe events counter
   var triggers = 0;
   $(document).on("wheel touchmove", function (e) {
-    $(".count").text(++triggers);
+    ++triggers;
   });
 
   // limit multiple wheel triggers to one move - mouse inertia timeout
@@ -370,6 +364,24 @@ $(document).ready(function () {
     }
   }
 
+  function scrollimitLeft() {
+    var date = new Date();
+    var checkTime = date.getTime();
+    if ((checkTime - firstExecution) > interval) {
+      firstExecution = checkTime;
+      slideRight();
+    }
+  }
+
+  function scrollimitRight() {
+    var date = new Date();
+    var checkTime = date.getTime();
+    if ((checkTime - firstExecution) > interval) {
+      firstExecution = checkTime;
+      slideLeft();
+    }
+  }
+
   $(document).on("wheel", function (e) {
     if (e.originalEvent.deltaY > 1 && triggers > 0 && triggers < 100) {
       scrollimitDown()
@@ -379,14 +391,15 @@ $(document).ready(function () {
       scrollimitUp()
       triggers = 0;
     }
+    if (e.originalEvent.deltaX > 1 && triggers > 0 && triggers < 100) {
+      scrollimitLeft()
+      triggers = 0;
+    }
+    if (e.originalEvent.deltaX < -1 && triggers > 0 && triggers < 100) {
+      scrollimitRight()
+      triggers = 0;
+    }
   });
-
-  /*
-    //slide bullets on mobile overlapped by tab/address bar - position modification
-    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-      $('.slideBul').css({ "bottom": 80 + "px" });
-    };
-  */
 
   //touch/mouse navigation with drag
   const pswrapper = document.querySelector(".pswrapper");
@@ -503,13 +516,8 @@ $(document).ready(function () {
       section.animate({ "top": "-=" + finishDrag + "px" }, 250);
       $(current).removeClass("current");
       $(nextPage).addClass("current");
-      
       correctTopOffset();
-
     }
-    $(".finished").text(finishDrag + "px");
-    $(".dragMove").text(dragYoffset + "px");
-
     checkcurrent();
     dragYoffset = 0;
     dragY = 0;
@@ -524,13 +532,8 @@ $(document).ready(function () {
       section.animate({ "top": "+=" + finishDrag + "px" }, 250);
       $(current).removeClass("current");
       $(prevPage).addClass("current");
-
       correctTopOffset();
-
     }
-    $(".finished").text(finishDrag + "px");
-    $(".dragMove").text(dragYoffset + "px");
-
     checkcurrent();
     dragYoffset = 0;
     dragY = 0;
@@ -545,10 +548,8 @@ $(document).ready(function () {
       section.animate({ "left": "-=" + finishDrag + "px" }, 250);
       $(current).removeClass("curSlide");
       $(nextSlide).addClass("curSlide");
+      correctLeftOffset();
     }
-    $(".finished").text(finishDrag + "px");
-    $(".dragMove").text(dragXoffset + "px");
-
     checkCurBul();
     dragXoffset = 0;
     dragX = 0;
@@ -563,22 +564,21 @@ $(document).ready(function () {
       section.animate({ "left": "+=" + finishDrag + "px" }, 250);
       $(current).removeClass("curSlide");
       $(prevSlide).addClass("curSlide");
+      correctLeftOffset()
     }
-    $(".finished").text(finishDrag + "px");
-    $(".dragMove").text(dragXoffset + "px");
-
     checkCurBul();
     dragXoffset = 0;
     dragX = 0;
   }
 
- //iOs (height - drag) calculation not precise
+ //iOs (height & width - drag) calculation not precise
  function correctTopOffset() {
   curPagePosition = ($(".current").index()) * -vHeight;
   $(".pswrapper").animate({ "top": curPagePosition + "px" }, 100);
-  //$(".topOffsetInfo").text($(".pswrapper").css("top"));
-  $(".topOffsetInfo").text(curPagePosition + "px");
-  console.log(curPagePosition);
+ };
+ function correctLeftOffset() {
+  curSlidePosition = ($(".current .curSlide").index()) * -vWidth;
+  $(".current .slideDiv").animate({ "left": curSlidePosition + "px" }, 100);
  };
 
 });
