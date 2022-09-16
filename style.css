@@ -97,7 +97,7 @@ button:hover {
 }
 .pageNav {
   position: fixed;
-  top: 50vh;
+  top: calc(var(--vHeight) * 0.5);
   left: 25px;
   transform: translateY(-50%);
 }
@@ -212,13 +212,6 @@ button:hover {
 }
 .slideBul a:hover > .slinkdesc {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-}
-.trigCount {
-  position: fixed;
-  bottom: 10px;
-  left: 10px;
-  color: #ffffff87;
-  font-size: 0.7em;
 }
 .grabbing {
   cursor: grab;
