@@ -125,7 +125,7 @@ button:hover {
   white-space: nowrap;
   text-align: left;
   position: relative;
-  left: 35px;
+  left: 44px;
   clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%);
 }
 .pageNav a:hover > .plinkdesc {

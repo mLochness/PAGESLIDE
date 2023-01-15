@@ -5,14 +5,12 @@ $(document).ready(function () {
 
   getWindowSize();
   pagesLayout();
-  
 
   function getWindowSize() {
     vHeight = document.documentElement.clientHeight;
-    //vHeight = window.innerHeight;
     document.documentElement.style.setProperty('--vHeight', `${vHeight}px`);
     vWidth = document.documentElement.clientWidth;
-    document.documentElement.style.setProperty('--vWidth', `${vWidth}px`);    
+    document.documentElement.style.setProperty('--vWidth', `${vWidth}px`);
   }
 
   //get offset 1 window height for each page from index
@@ -20,10 +18,18 @@ $(document).ready(function () {
     $(".page").each(function () {
       var pageIndex = $(this).index();
       $(this).css({ "top": (vHeight * pageIndex) + "px" });
+      //assign ID to each page - starting no.1
+      $(this).attr('id', ('pspage' + (pageIndex + 1)));
+
+      //assign ID to each slide - starting no.1
+      if ($(this).find('.spslide').length !== 0) {
+        $(".spslide").each(function () {
+          var slideIndex = $(this).index();
+          $(this).attr('id', ('-' + (slideIndex + 1)));
+        });
+      }
     });
   }
-
-  $(".page").first().addClass("current");
 
   slidesContainerWidth();
   slidesLayout();
@@ -212,7 +218,7 @@ $(document).ready(function () {
       "</span></a>"
     ).attr("href", "#" + pageid);
     $(".pageNav").append(plink);
-    $(".pageNav a").first().addClass("current-bull");
+    checkcurrent();
 
   });
 
@@ -228,10 +234,12 @@ $(document).ready(function () {
     });
   });
 
+
   //assign current class for page nav bullets
   function checkcurrent() {
     $(".pageNav a").each(function () {
       var pBulIndex = $(this).index();
+
       if (pBulIndex == $(".current").index()) {
         $(".pageNav a").removeClass("current-bull");
         $(".pageNav a:eq(" + pBulIndex + ")").addClass("current-bull");
@@ -275,13 +283,11 @@ $(document).ready(function () {
   $(document).on("keydown", function (e) {
     if (e.keyCode === 37) {
       slideLeft();
-      triggers = 0;
     }
   });
-  $(document).on("keydown wheel", function (e) {
+  $(document).on("keydown", function (e) {
     if (e.keyCode === 39) {
       slideRight();
-      triggers = 0;
     }
   });
 
@@ -298,7 +304,7 @@ $(document).ready(function () {
 
   //assign current class for slide nav bullets + show L/R nav arrows
   const slideBullet = $(".slideBul a");
-    
+
   function checkCurBul() {
     var lastSlideIndex = $(".current .spslide").last().index();
     slideBullet.each(function () {
@@ -306,12 +312,12 @@ $(document).ready(function () {
       if (sBulIndex == $(".current .curSlide").index()) {
         $(".current .slide-nav-bull").removeClass("current-bull");
         $(".current .slide-nav-bull:eq(" + sBulIndex + ")").addClass("current-bull");
-      
+
         if (sBulIndex == 0) {
           $(".current .slideNavL").css("left", "-50px");
           $(".current .slideNavR").css("right", "50px");
         }
-        else if (sBulIndex == lastSlideIndex ) {
+        else if (sBulIndex == lastSlideIndex) {
           $(".current .slideNavR").css("right", "-50px");
           $(".current .slideNavL").css("left", "50px");
         }
@@ -321,6 +327,10 @@ $(document).ready(function () {
         }
       }
     });
+
+    getCurSlideHash();
+    updateURLhash();
+
   }
 
   //slide bullet click function
@@ -416,8 +426,8 @@ $(document).ready(function () {
     dragY = 0,
     dragX = 0,
     isDragging = false;
-    draggingY = 0;
-    draggingX = 0;
+  draggingY = 0;
+  draggingX = 0;
 
   pswrapper.addEventListener("pointerdown", pointerDown);
   pswrapper.addEventListener("pointerup", pointerUp);
@@ -513,7 +523,7 @@ $(document).ready(function () {
     if ($(current).next().length) {
       var nextPage = $(current).next();
       section = $(current).closest(".pswrapper");
-      section.animate({ "top": "-=" + finishDrag + "px" }, 250);
+      section.animate({ "top": "-=" + finishDrag + "px" }, 200);
       $(current).removeClass("current");
       $(nextPage).addClass("current");
       correctTopOffset();
@@ -529,7 +539,7 @@ $(document).ready(function () {
     if ($(current).prev().length) {
       var prevPage = $(current).prev(),
         section = $(current).closest(".pswrapper");
-      section.animate({ "top": "+=" + finishDrag + "px" }, 250);
+      section.animate({ "top": "+=" + finishDrag + "px" }, 200);
       $(current).removeClass("current");
       $(prevPage).addClass("current");
       correctTopOffset();
@@ -571,14 +581,122 @@ $(document).ready(function () {
     dragX = 0;
   }
 
- //iOs (height & width - drag) calculation not precise
- function correctTopOffset() {
-  curPagePosition = ($(".current").index()) * -vHeight;
-  $(".pswrapper").animate({ "top": curPagePosition + "px" }, 100);
- };
- function correctLeftOffset() {
-  curSlidePosition = ($(".current .curSlide").index()) * -vWidth;
-  $(".current .slideDiv").animate({ "left": curSlidePosition + "px" }, 100);
- };
+  //iOs (height & width - drag) calculation not precise
+  function correctTopOffset() {
+    curPagePosition = ($(".current").index()) * -vHeight;
+    $(".pswrapper").animate({ "top": curPagePosition + "px" }, 100);
+  };
+  function correctLeftOffset() {
+    curSlidePosition = ($(".current .curSlide").index()) * -vWidth;
+    $(".current .slideDiv").animate({ "left": curSlidePosition + "px" }, 100);
+  };
+
+  /////////////////////////// URL NAVIGATION ////////////////////////
+
+  var checkSlashVal;
+  var checkDashVal;
+  var pageLengthCheck;
+  var slideLengthCheck
+  var curSlideUrl;
+  var url;
+  var URLPageID;
+  var URLSlideID;
+  var urlTarget;
+  var curUrl;
+
+  //navigate to particular page if defined in url
+  addEventListener('hashchange', checkHash);
+
+  checkHash();
+
+  function checkHash() {
+    url = document.URL;
+    checkSlashVal = url.substring(url.lastIndexOf('/') + 1);
+    checkDashVal = checkSlashVal.substring(checkSlashVal.lastIndexOf('-') + 1);
+    pageLengthCheck = $('#' + (checkSlashVal.split('#').pop().split('-')[0])).length;
+
+    //if no hash -> add hash of #firstPage;
+    if (!checkSlashVal || pageLengthCheck ==0 ) {
+      URLPageID = '#' + $(".page").first().attr("id");
+      $(".page").first().addClass("current");
+      window.location.hash = URLPageID;
+      return;
+    }
+    //if page url value exists -> add hash
+    if (checkSlashVal) {
+      URLPageID = '#' + checkSlashVal.split('#').pop().split('-')[0];
+      curUrl = checkSlashVal;
+    }
+
+    urlTarget = $(URLPageID).index();
+
+    //check if url slide exists
+    slideLengthCheck = $(".page:eq(" + urlTarget + ")").find(".spslide:eq(" + (checkDashVal - 1) + ")").length;
+
+    if (~checkSlashVal.indexOf("-") && slideLengthCheck == 1) {
+      curSlideUrl = ("-" + checkDashVal);
+      URLSlideID = parseInt(checkDashVal);
+    }
+
+    //if url slide none or non-existing
+    if (checkSlashVal.indexOf("-") < 0 || slideLengthCheck !== 1) {
+      curSlideUrl = '';
+      URLSlideID = 0;
+    }
+
+    //go to url defined page
+    if (urlTarget !== -1) {
+      $(".pswrapper").css("top", -vHeight * urlTarget + "px");
+      $(".page").removeClass("current");
+      $(URLPageID).addClass("current");
+      $(".pageNav a").removeClass("current-bull");
+      $(".pageNav a:eq(" + urlTarget + ")").addClass("current-bull");
+    }
+
+    //go to url defined slide
+    if (URLSlideID !== 0) {
+      $(".current .slideDiv").css("left", -vWidth * (URLSlideID - 1) + "px");
+      $(".current .spslide").removeClass("curSlide");
+      $(".current .spslide:eq(" + (URLSlideID - 1) + ")").addClass("curSlide");
+      checkCurBul();
+    }
+
+    updateURLhash();
+  }
+
+  function getCurSlideHash() {
+    if ($(".current").find('.curSlide').length !== 0) {
+      curSlideUrl = ("-" + ($(".current .curSlide").index() + 1));
+    }
+    else {
+      curSlideUrl = "";
+    }
+  }
+
+  //update URL.hash 
+  function updateURLhash() {
+    curUrl = ("#" + $(".current").attr("id")) + curSlideUrl;
+    // curUrl = $(".current").attr("id");
+    window.location.hash = curUrl;
+  }
+
+  //check for movement to update URL
+  let mutPage = document.querySelector(".pageNav");
+  options = {
+    childList: true,
+    subtree: true,
+    attributeFilter: ['class']
+  },
+    observer = new MutationObserver(mCallback);
+
+  function mCallback(mutations) {
+    for (let mutation of mutations) {
+      if (mutation.type === 'attributes') {
+        getCurSlideHash();
+        updateURLhash();
+      }
+    }
+  }
+  observer.observe(mutPage, options);
 
 });
