@@ -591,7 +591,7 @@ $(document).ready(function () {
     $(".current .slideDiv").animate({ "left": curSlidePosition + "px" }, 100);
   };
 
-  /////////////////////////// URL NAVIGATION ////////////////////////
+ /////////////////////////// URL NAVIGATION ////////////////////////
 
   var checkSlashVal;
   var checkDashVal;
@@ -613,21 +613,22 @@ $(document).ready(function () {
     url = document.URL;
     checkSlashVal = url.substring(url.lastIndexOf('/') + 1);
     checkDashVal = checkSlashVal.substring(checkSlashVal.lastIndexOf('-') + 1);
-    pageLengthCheck = $('#' + (checkSlashVal.split('#').pop().split('-')[0])).length;
+    
+    //if page url value exists -> add hash
+    if (checkSlashVal) {
+      pageLengthCheck = $('#' + (checkSlashVal.split('#').pop().split('-')[0])).length;
+      URLPageID = '#' + checkSlashVal.split('#').pop().split('-')[0];
+      curUrl = checkSlashVal;
+    }
 
     //if no hash -> add hash of #firstPage;
-    if (!checkSlashVal || pageLengthCheck ==0 ) {
+    if (!checkSlashVal || pageLengthCheck == 0 ) {
       URLPageID = '#' + $(".page").first().attr("id");
       $(".page").first().addClass("current");
       window.location.hash = URLPageID;
       return;
     }
-    //if page url value exists -> add hash
-    if (checkSlashVal) {
-      URLPageID = '#' + checkSlashVal.split('#').pop().split('-')[0];
-      curUrl = checkSlashVal;
-    }
-
+    
     urlTarget = $(URLPageID).index();
 
     //check if url slide exists
