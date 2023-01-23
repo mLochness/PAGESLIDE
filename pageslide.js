@@ -15,15 +15,15 @@ $(document).ready(function () {
 
   //get offset 1 window height for each page from index
   function pagesLayout() {
-    $(".page").each(function () {
+    $(".pspage").each(function () {
       var pageIndex = $(this).index();
       $(this).css({ "top": (vHeight * pageIndex) + "px" });
       //assign ID to each page - starting no.1
       $(this).attr('id', ('pspage' + (pageIndex + 1)));
 
       //assign ID to each slide - starting no.1
-      if ($(this).find('.spslide').length !== 0) {
-        $(".spslide").each(function () {
+      if ($(this).find('.psslide').length !== 0) {
+        $(".psslide").each(function () {
           var slideIndex = $(this).index();
           $(this).attr('id', ('-' + (slideIndex + 1)));
         });
@@ -44,7 +44,7 @@ $(document).ready(function () {
 
   function slidesLayout() {
     //get offset +1 screen width for each slide
-    $(".spslide").each(function () {
+    $(".psslide").each(function () {
       var slideIndex = $(this).index();
       $(this).css({ "left": (vWidth * slideIndex) + "px" });
     });
@@ -114,19 +114,6 @@ $(document).ready(function () {
     $(".current .slideDiv").animate({ "left": leftOffset }, 300);
   }
 
-  //page bullet click function
-  $(".pageNav a").each(function () {
-    var bulIndex = $(this).index();
-    //var pageOffset = (bulIndex * -100) + "vh";
-    var pageOffset = (bulIndex * -vHeight) + "px";
-    $(this).click(function () {
-      $(".pswrapper").animate({ "top": pageOffset }, 500);
-      $(".current").removeClass("current");
-      $(".page:eq(" + bulIndex + ")").addClass("current");
-      checkcurrent();
-    });
-  });
-
   function moveUp() {
     current = $(".current");
     if ($(current).next().length) {
@@ -195,21 +182,28 @@ $(document).ready(function () {
 
   function goToTop() {
     $(".pswrapper").animate({ "top": "0" }, 1000);
-    $(".page").removeClass("current");
-    $(".page").first().addClass("current");
+    $(".pspage").removeClass("current");
+    $(".pspage").first().addClass("current");
     checkcurrent();
   };
 
   function goToEnd() {
-    var pageCount = $(".page").length;
+    var pageCount = $(".pspage").length;
     $(".pswrapper").animate({ "top": (-100 * (pageCount - 1)) + "vh" }, 1000);
-    $(".page").removeClass("current");
-    $(".page").last().addClass("current");
+    $(".pspage").removeClass("current");
+    $(".pspage").last().addClass("current");
     checkcurrent();
   };
 
+  //add page navigation if more than one page
+  const pageNavBullets = $("<div class='pageNav'></div>");
+  var twoOrMorePages = $(".pspage").length;
+  if (twoOrMorePages >= 2) {
+    $(".pswrapper").after(pageNavBullets);
+  }
+
   //page navigation nodes generator
-  $(".page").each(function () {
+  $(".pspage").each(function () {
     var pageid = $(this).attr("id");
     var pagename = $(this).attr("name");
     var plink = $(
@@ -229,11 +223,10 @@ $(document).ready(function () {
     $(this).click(function () {
       $(".pswrapper").animate({ "top": pageOffset }, 300);
       $(".current").removeClass("current");
-      $(".page:eq(" + bulIndex + ")").addClass("current");
+      $(".pspage:eq(" + bulIndex + ")").addClass("current");
       checkcurrent();
     });
   });
-
 
   //assign current class for page nav bullets
   function checkcurrent() {
@@ -246,6 +239,26 @@ $(document).ready(function () {
       }
     });
   }
+
+  //wrap slides into container
+  $(".pspage").each(function () {
+    if($(this).find(".psslide").length) {
+      $(this).find(".psslide").wrapAll( "<div class='slideDiv' />");
+    }
+  });
+
+  //add slide navigation if more than one slide
+  $(".slideDiv").each(function () {
+    const slideNavBullets = $("<div class='slideBul'></div>");
+    const slideArrowLeft = $("<div class='slideNav slideNavL'></div>");
+    const slideArrowRight = $("<div class='slideNav slideNavR'></div>");
+    var twoOrMoreSlides = $(this).find(".psslide").length;
+      if (twoOrMoreSlides >= 2) {
+        $(this).after(slideNavBullets);
+        $(this).after(slideArrowLeft);
+        $(this).after(slideArrowRight);
+      }
+    });
 
   // slide to left
   function slideLeft() {
@@ -269,7 +282,7 @@ $(document).ready(function () {
   }
 
   $(".slideDiv").each(function () {
-    $(this).find(".spslide").first().addClass("curSlide");
+    $(this).find(".psslide").first().addClass("curSlide");
     $(".slideNavL").css("left", "-50px");
   });
   $(".slideNavL").click(function () {
@@ -292,21 +305,21 @@ $(document).ready(function () {
   });
 
   //slide navigation nodes generator
-  $(".spslide").each(function () {
+  $(".psslide").each(function () {
     var slideid = $(this).attr("id");
     var slidename = $(this).attr("name");
 
-    //add name attribute to bullet:
+    //add slide name attribute to bullet:
     var slink = $("<a class='slide-nav-bull'><span class='slinkdesc'>" + slidename + "</span></a>").attr("name", slideid);
-    $(this).closest(".page").find(".slideBul").append(slink);
-    $(this).closest(".page").find(".slideBul a").first().addClass("current-bull");
+    $(this).closest(".pspage").find(".slideBul").append(slink);
+    $(this).closest(".pspage").find(".slideBul a").first().addClass("current-bull");
   });
 
   //assign current class for slide nav bullets + show L/R nav arrows
   const slideBullet = $(".slideBul a");
 
   function checkCurBul() {
-    var lastSlideIndex = $(".current .spslide").last().index();
+    var lastSlideIndex = $(".current .psslide").last().index();
     slideBullet.each(function () {
       var sBulIndex = $(this).index();
       if (sBulIndex == $(".current .curSlide").index()) {
@@ -340,7 +353,7 @@ $(document).ready(function () {
     $(this).click(function () {
       $(".current .slideDiv").animate({ "left": slideOffset }, 500);
       $(".current .curSlide").removeClass("curSlide");
-      $(".current .spslide:eq(" + sBulIndex + ")").addClass("curSlide");
+      $(".current .psslide:eq(" + sBulIndex + ")").addClass("curSlide");
       checkCurBul();
     });
   });
@@ -591,7 +604,7 @@ $(document).ready(function () {
     $(".current .slideDiv").animate({ "left": curSlidePosition + "px" }, 100);
   };
 
- /////////////////////////// URL NAVIGATION ////////////////////////
+  /////////////////////////// URL NAVIGATION ////////////////////////
 
   var checkSlashVal;
   var checkDashVal;
@@ -613,7 +626,7 @@ $(document).ready(function () {
     url = document.URL;
     checkSlashVal = url.substring(url.lastIndexOf('/') + 1);
     checkDashVal = checkSlashVal.substring(checkSlashVal.lastIndexOf('-') + 1);
-    
+
     //if page url value exists -> add hash
     if (checkSlashVal) {
       pageLengthCheck = $('#' + (checkSlashVal.split('#').pop().split('-')[0])).length;
@@ -622,17 +635,17 @@ $(document).ready(function () {
     }
 
     //if no hash -> add hash of #firstPage;
-    if (!checkSlashVal || pageLengthCheck == 0 ) {
-      URLPageID = '#' + $(".page").first().attr("id");
-      $(".page").first().addClass("current");
+    if (!checkSlashVal || pageLengthCheck == 0) {
+      URLPageID = '#' + $(".pspage").first().attr("id");
+      $(".pspage").first().addClass("current");
       window.location.hash = URLPageID;
       return;
     }
-    
+
     urlTarget = $(URLPageID).index();
 
     //check if url slide exists
-    slideLengthCheck = $(".page:eq(" + urlTarget + ")").find(".spslide:eq(" + (checkDashVal - 1) + ")").length;
+    slideLengthCheck = $(".pspage:eq(" + urlTarget + ")").find(".psslide:eq(" + (checkDashVal - 1) + ")").length;
 
     if (~checkSlashVal.indexOf("-") && slideLengthCheck == 1) {
       curSlideUrl = ("-" + checkDashVal);
@@ -648,7 +661,7 @@ $(document).ready(function () {
     //go to url defined page
     if (urlTarget !== -1) {
       $(".pswrapper").css("top", -vHeight * urlTarget + "px");
-      $(".page").removeClass("current");
+      $(".pspage").removeClass("current");
       $(URLPageID).addClass("current");
       $(".pageNav a").removeClass("current-bull");
       $(".pageNav a:eq(" + urlTarget + ")").addClass("current-bull");
@@ -657,8 +670,8 @@ $(document).ready(function () {
     //go to url defined slide
     if (URLSlideID !== 0) {
       $(".current .slideDiv").css("left", -vWidth * (URLSlideID - 1) + "px");
-      $(".current .spslide").removeClass("curSlide");
-      $(".current .spslide:eq(" + (URLSlideID - 1) + ")").addClass("curSlide");
+      $(".current .psslide").removeClass("curSlide");
+      $(".current .psslide:eq(" + (URLSlideID - 1) + ")").addClass("curSlide");
       checkCurBul();
     }
 

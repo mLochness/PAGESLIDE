@@ -19,7 +19,7 @@ body {
   top: 0;
   touch-action: none; /* chrome mobile browsers pointermove fix */
 }
-.page {
+.pspage {
   position: absolute;
   /*width: 100vw;*/
   width: var(--vWidth);
@@ -27,73 +27,6 @@ body {
   top: 0;
   display: grid;
   box-sizing: border-box;
-}
-.page1 {
-  background-color: #74b2d0;
-  align-content: center;
-  justify-content: center;
-}
-.page2 {
-  background-color: #52b79c;
-  align-content: center;
-  justify-content: center;
-}
-.page3 {
-  background-color: #db8089;
-  align-content: center;
-  justify-content: center;
-}
-.page4 {
-  background-color: #9880db;
-  align-content: center;
-  justify-content: center;
-}
-.page5 {
-  background-color: #aea17a;
-  align-content: center;
-  justify-content: center;
-}
-.dummy {
-  display: grid;
-  margin: auto;
-  user-select: none;
-}
-.slideNum {
-  display: block;
-  margin: auto;
-  font-size: clamp(120px, 35vw, 500px);
-  font-weight: 900;
-  line-height: 0.2em;
-  color: #ffffff40;
-  position: relative;
-  top: -5vw;
-}
-.pgName{
-  margin: auto;
-  font-size: clamp(40px, 5vw, 100px);
-  font-weight: 900;
-  position: relative;
-  top: 5vh;
-  opacity: 0.3;
-}
-button {
-  margin: auto;
-  display: inline-block;
-  position: relative;
-  top: 14vh;
-  padding: 15px 25px;
-  color: #fff;
-  background-color: #0000003b;
-  border: none;
-  border-radius: 15px;
-  cursor: pointer;
-  font-weight: 800;
-  font-family: inherit;
-  transition: all 0.5s;
-}
-button:hover {
-  background-color: #fff;
-  color: #2b0b0b;
 }
 .pageNav {
   position: fixed;
@@ -161,19 +94,19 @@ button:hover {
 .slideDiv {
   display: flex;
   height: 100%;
-  overflow: hidden;
+  /*overflow: hidden;*/
   position: absolute;
   left: 0;
   width: var(--vWidth);
 }
-.spslide {
+.psslide {
   height: var(--vHeight);
   width: var(--vWidth);
   position: absolute;
   top: 0;
   display: flex;
 }
-.spslide:nth-of-type(even)  {
+.psslide:nth-of-type(even)  {
   background-color: #ffffff0f;
 }
 .slideBul {
@@ -213,12 +146,80 @@ button:hover {
 .slideBul a:hover > .slinkdesc {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
-.grabbing {
-  cursor: grab;
-}
 
 @media (max-width: 768px){
 .plinkdesc, .slinkdesc {
     display: none;
    }
+}
+
+
+
+/****************** DEMO ELEMENTS ******************/
+.pspage1 {
+  background-color: #74b2d0;
+  align-content: center;
+  justify-content: center;
+}
+.pspage2 {
+  background-color: #52b79c;
+  align-content: center;
+  justify-content: center;
+}
+.pspage3 {
+  background-color: #db8089;
+  align-content: center;
+  justify-content: center;
+}
+.pspage4 {
+  background-color: #9880db;
+  align-content: center;
+  justify-content: center;
+}
+.pspage5 {
+  background-color: #aea17a;
+  align-content: center;
+  justify-content: center;
+}
+.dummy {
+  display: grid;
+  margin: auto;
+  user-select: none;
+}
+.slideNum {
+  display: block;
+  margin: auto;
+  font-size: clamp(120px, 35vw, 500px);
+  font-weight: 900;
+  line-height: 0.2em;
+  color: #ffffff40;
+  position: relative;
+  top: -5vw;
+}
+.pgName{
+  margin: auto;
+  font-size: clamp(40px, 5vw, 100px);
+  font-weight: 900;
+  position: relative;
+  top: 5vh;
+  opacity: 0.3;
+}
+button {
+  margin: auto;
+  display: inline-block;
+  position: relative;
+  top: 14vh;
+  padding: 15px 25px;
+  color: #fff;
+  background-color: #0000003b;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  font-weight: 800;
+  font-family: inherit;
+  transition: all 0.5s;
+}
+button:hover {
+  background-color: #fff;
+  color: #2b0b0b;
 }
